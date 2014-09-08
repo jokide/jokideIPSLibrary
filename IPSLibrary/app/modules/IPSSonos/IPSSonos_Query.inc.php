@@ -150,6 +150,8 @@
 				// Group Slave:		[TrackURI] => x-rincon:RINCON_000E5872E10801400
 				
 				// Identify type of player
+				$PlayerType = "Other";
+				
 				if ($Status === 3) {
 				
 					$PlayerType = "Stop";
@@ -202,7 +204,7 @@
 					}
 				}
 				elseif ($PosInfo["URI"] === "") {
-					if ((substr($PosInfo["TrackURI"], 0, 18) === "x-sonos-htastream"))
+					if ((substr($PosInfo["TrackURI"], 0, 17) === "x-sonos-htastream"))
 					 $PlayerType = "External";
 					elseif ((substr($PosInfo["TrackURI"], 0, 8) === "x-rincon")) {
 					 $PlayerType = "Groupmember"; } 
