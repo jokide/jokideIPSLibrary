@@ -42,7 +42,7 @@
     *
 	* @author        joki
 	* @version
-	* Version 1.0.0, 01.09.2014<br/>
+	* Version 1.0.2, 11.09.2014<br/>
     */
 	class IPSSonos_Server {
 
@@ -99,7 +99,7 @@
 		 * @param string $msg Meldung 
 		 */
 		private function LogErr($msg) {
-			IPSLogger_Err(__file__, $msg);
+			IPSLogger_Err("IPSSonos", $msg);
 			$this->Log('Err', $msg);
 		}
 		
@@ -111,7 +111,7 @@
 		 * @param string $msg Meldung 
 		 */
 		private function LogInf($msg) {
-			IPSLogger_Inf(__file__, $msg);
+			IPSLogger_Inf("IPSSonos", $msg);
 			$this->Log('Inf', $msg);
 		}
 		
@@ -123,7 +123,7 @@
 		 * @param string $msg Meldung 
 		 */
 		private function LogDbg($msg) {
-			IPSLogger_Dbg(__file__, $msg);
+			IPSLogger_Dbg("IPSSonos", $msg);
 			$this->Log('Dbg', $msg);
 		}
 
@@ -135,7 +135,7 @@
 		 * @param string $msg Meldung 
 		 */
 		private function LogCom($msg) {
-			IPSLogger_Com(__file__, $msg);
+			IPSLogger_Com("IPSSonos", $msg);
 			$this->Log('Com', $msg);
 		}
 		
@@ -147,7 +147,7 @@
 		 * @param string $msg Meldung 
 		 */
 		private function LogTrc($msg) {
-			IPSLogger_Trc(__file__, $msg);
+			IPSLogger_Trc("IPSSonos", $msg);
 			$this->Log('Trc', $msg);
 		}
 			
@@ -215,6 +215,7 @@
 					
 					switch ($function) {
 						case IPSSONOS_FNC_ROOMS:
+							$room_array = [];
 							$roomIds = GetValue(IPS_GetObjectIDByIdent(IPSSONOS_VAR_ROOMIDS, $this->instanceId));
 							if ($roomIds=="") {
 								return false;
@@ -227,6 +228,7 @@
 							return $room_array;
 							break;	
 						case IPSSONOS_FNC_ROOMSACTIVE:
+							$room_array = [];
 							$allRooms = IPSSonos_GetAllRooms();
 							foreach ($allRooms as $roomName){
 								$room = $this->GetRoom($roomName);
@@ -276,30 +278,30 @@
 					switch ($function) {
 						case IPSSONOS_FNC_VOLUME:
 							$sonos->SetVolume($value);
-							$this->LogInf('Lautstärke im Raum '.$roomName.' gesetzt auf: '.$value);
+							$this->LogDbg('Lautstärke im Raum '.$roomName.' gesetzt auf: '.$value);
 							$result = true;
 							break;
 						case IPSSONOS_FNC_VOLUME_RMP:
 							$ramp_type =  "SLEEP_TIMER_RAMP_TYPE";
 							$sonos->RampToVolume( $ramp_type, $value);
-							$this->LogInf('Lautstärke im Raum '.$roomName.' gesetzt auf: '.$value);
+							$this->LogDbg('Lautstärke im Raum '.$roomName.' gesetzt auf: '.$value);
 							$result = true;
 							break;
 						case IPSSONOS_FNC_VOLUME_RMPMUTE: 
 							$sonos->RampToVolume("AUTOPLAY_RAMP_TYPE", $value);
-							$this->LogInf('Lautstärke im Raum '.$roomName.' gesetzt auf: '.$value);
+							$this->LogDbg('Lautstärke im Raum '.$roomName.' gesetzt auf: '.$value);
 							$result = true;
 							break;
 						case IPSSONOS_FNC_VOLUME_RMPMUTESLOW: 
 							$sonos->RampToVolume("ALARM_RAMP_TYPE", $value);
-							$this->LogInf('Lautstärke im Raum '.$roomName.' gesetzt auf: '.$value);
+							$this->LogDbg('Lautstärke im Raum '.$roomName.' gesetzt auf: '.$value);
 							$result = true;
 							break;									
 						case IPSSONOS_FNC_VOLUME_INC:	
 								$current_volume = $sonos->GetVolume();
 								$new_volume = $current_volume + $value;
 								$sonos->SetVolume($new_volume);
-								$this->LogInf('Lautstärke im Raum '.$roomName.' um '.$value.' erhöht auf: '.$new_volume);
+								$this->LogDbg('Lautstärke im Raum '.$roomName.' um '.$value.' erhöht auf: '.$new_volume);
 								$value = $new_volume;
 								$result = true;
 							break;	
@@ -307,52 +309,52 @@
 								$current_volume = $sonos->GetVolume();
 								$new_volume = $current_volume - $value;
 								$sonos->SetVolume($new_volume);
-								$this->LogInf('Lautstärke im Raum '.$roomName.' um '.$value.' verringert auf: '.$new_volume);
+								$this->LogDbg('Lautstärke im Raum '.$roomName.' um '.$value.' verringert auf: '.$new_volume);
 								$value = $new_volume;
 								$result = true;								
 							break;
 						case IPSSONOS_FNC_PLAY:	
 								$sonos->Play();
-								$this->LogInf('Abspielen im Raum '.$roomName.' gestartet.');
+								$this->LogDbg('Abspielen im Raum '.$roomName.' gestartet.');
 								$value = IPSSONOS_TRA_PLAY;
 								$result = true;
 							break;
 						case IPSSONOS_FNC_STOP:	
 								$sonos->Stop();
-								$this->LogInf('Abspielen im Raum '.$roomName.' gestopt.');
+								$this->LogDbg('Abspielen im Raum '.$roomName.' gestopt.');
 								$value = IPSSONOS_TRA_STOP;	
 								$result = true;
 							break;
 						case IPSSONOS_FNC_PAUSE:	
 								$sonos->Pause();
-								$this->LogInf('Abspielen im Raum '.$roomName.' pausiert.');
+								$this->LogDbg('Abspielen im Raum '.$roomName.' pausiert.');
 								$value = IPSSONOS_TRA_PAUSE;
 								$result = true;
 							break;
 						case IPSSONOS_FNC_NEXT:	
 								$sonos->Next();
-								$this->LogInf('Nächstes Lied im Raum '.$roomName.' abspielen.');
+								$this->LogDbg('Nächstes Lied im Raum '.$roomName.' abspielen.');
 								$function 	= IPSSONOS_FNC_PLAY;								
 								$value 		= IPSSONOS_TRA_PLAY;
 								$result = true;
 							break;		
 						case IPSSONOS_FNC_PREVIOUS:	
 								$sonos->Previous();
-								$this->LogInf('Vorheriges Lied im Raum '.$roomName.' abspielen.');
+								$this->LogDbg('Vorheriges Lied im Raum '.$roomName.' abspielen.');
 								$function 	= IPSSONOS_FNC_PLAY;								
 								$value 		= IPSSONOS_TRA_PLAY;
 								$result = true;
 							break;
 						case IPSSONOS_FNC_MUTE:	
 								$sonos->SetMute($value);
-								$this->LogInf('Mute im Raum '.$roomName.' gesetzt auf: '.$value);
+								$this->LogDbg('Mute im Raum '.$roomName.' gesetzt auf: '.$value);
 								$function 	= IPSSONOS_FNC_MUTE;
 								$result = true;
 							break;								
-						case IPSSONOS_FNC_PLAYPLNAME:	
+						case IPSSONOS_FNC_PLAYPLNAME:
 								if ($this->SetQueuePlaylistByName($room, $sonos, $value)== true) {
 									$sonos->Play();
-									$this->LogInf('Playlist '.$value.' im Raum '.$roomName.' gestartet.');
+									$this->LogDbg('Playlist '.$value.' im Raum '.$roomName.' gestartet.');
 									$function 	= IPSSONOS_FNC_PLAY;
 									$value 		= IPSSONOS_TRA_PLAY;
 									$result = true;
@@ -365,7 +367,7 @@
 						case IPSSONOS_FNC_PLAYPLID:	
 								if ($this->SetQueuePlaylistByID($room, $sonos, $value)== true) {
 									$sonos->Play();
-									$this->LogInf('Playlist mit ID '.$value.' im Raum '.$roomName.' gestartet.');
+									$this->LogDbg('Playlist mit ID '.$value.' im Raum '.$roomName.' gestartet.');
 									$function 	= IPSSONOS_FNC_PLAY;
 									$value 		= IPSSONOS_TRA_PLAY;
 									$result = true;
@@ -378,7 +380,7 @@
 						case IPSSONOS_FNC_PLAYRDNAME:	
 								if ($this->SetQueueRadiostationByName($room, $sonos, $value)== true) {
 									$sonos->Play();
-									$this->LogInf('Radiostation '.$value.' im Raum '.$roomName.' gestartet.');
+									$this->LogDbg('Radiostation '.$value.' im Raum '.$roomName.' gestartet.');
 									$function 	= IPSSONOS_FNC_PLAY;
 									$value 		= IPSSONOS_TRA_PLAY;
 									$result = true;
@@ -391,7 +393,7 @@
 						case IPSSONOS_FNC_PLAYRDID:	
 								if ($this->SetQueueRadiostationByID($room, $sonos, $value)== true) {
 									$sonos->Play();
-									$this->LogInf('Playlist mit ID '.$value.' im Raum '.$roomName.' gestartet.');
+									$this->LogDbg('Playlist mit ID '.$value.' im Raum '.$roomName.' gestartet.');
 									$function 	= IPSSONOS_FNC_PLAY;
 									$value 		= IPSSONOS_TRA_PLAY;
 									$result = true;
@@ -420,7 +422,7 @@
 									}								
 								}
 								$sonos->SetPlayMode($mode);
-								$this->LogInf('Mode im Raum '.$roomName.' gesetzt auf: '.$mode);
+								$this->LogDbg('Mode im Raum '.$roomName.' gesetzt auf: '.$mode);
 								$result = true;
 							break;								
 						case IPSSONOS_FNC_REPEAT:
@@ -442,7 +444,7 @@
 									}								
 								}					
 								$sonos->SetPlayMode($mode);
-								$this->LogInf('Mode im Raum '.$roomName.' gesetzt auf: '.$mode);
+								$this->LogDbg('Mode im Raum '.$roomName.' gesetzt auf: '.$mode);
 								$result = true;
 							break;								
 						default:
@@ -468,7 +470,10 @@
 							
 							//Raum ausschalten
 							if ($value == false) {
-								$result = IPSSonos_Stop($roomName);
+								$result = $sonos->Stop();
+								//Reset profile of variable to show OnDelay
+								$variableId  = IPS_GetObjectIDByIdent(IPSSONOS_VAR_ROOMPOWER, $room->instanceId);
+								IPS_SetVariableCustomProfile($variableId , "IPSSonos_Power");
 							}
 							// Raum schalten
 							if( IPSSonos_Custom_SetRoomPower($roomName, $value) == true) {
@@ -486,7 +491,7 @@
 									$TimerId = IPS_GetEventIDByName(IPSSONOS_EVT_POWERONDELAY, $id_ScriptSettings);
 									IPS_SetEventActive($TimerId, true);
 								}
-								$this->LogInf('Power im Raum '.$roomName.' gesetzt auf: '.$value.'!');
+								$this->LogDbg('Power im Raum '.$roomName.' gesetzt auf: '.$value.'!');
 								$result = true;
 							}
 							else {

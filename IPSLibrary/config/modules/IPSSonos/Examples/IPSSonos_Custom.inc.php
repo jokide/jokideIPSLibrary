@@ -23,7 +23,7 @@
 	 * @file          IPSSonos_Custom.inc.php
 	 * @author        joki
 	 * @version
-	 * Version 1.0.0, 01.09.2014<br/>
+	 *   Version 1.0.2, 11.09.2014<br/>
 	 *
 	 * Callback Methoden für IPSSonos
 	 *
@@ -87,11 +87,28 @@
 			IPSSonos_SetVolume($room_name, '10');
 			break;				
 		}	
-
-		return true;
-
-
 	}
-	/** @}*/
+	
+	/**
+	 * This function is getting called when IPSSonos detects a change in player type (i.e. Radio, SPDIF/TOS-Link, MP3, ...)
+	 * Please note: Dependent on the query update setting in the WebFront, there can be a delay in the detection.
+	 *
+	 * Parameters:
+	 *   @param string $room_name name of the room in which the type of player changed
+	 *   @param string $PlayerType new type of player, possibly values are:
+	 *       OTHER
+	 *  	 SONG
+	 *  	 RADIO
+	 *  	 EXTERNAL
+	 *  	 GROUPMEMBER
+	 *
+	 */		
 
+	 
+	function IPSSonos_Custom_PlayerType($roomName, $PlayerType)  {
+	
+	    IPSUtils_Include ("IPSLogger.inc.php", "IPSLibrary::app::core::IPSLogger");
+		IPSLogger_Inf("IPSSonos_Custom", "Player in romm ".$roomName." changed to: ".$PlayerType);  
+	}	
+	/** @}*/
 ?>

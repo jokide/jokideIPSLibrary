@@ -116,13 +116,13 @@
 				$sonos = new PHPSonos($room->IPAddr);
 				
 				// Get Sonos information
-				$ZoneAttributes 		= $sonos->GetZoneAttributes();
+//				$ZoneAttributes 		= $sonos->GetZoneAttributes();
 				$PosInfo 				= $sonos->GetPositionInfo(); 
 				$Status 				= $sonos->GetTransportInfo();	// gibt den aktuellen Status des Sonos-Players als Integer zurück, 1: PLAYING, 2: PAUSED, 3: STOPPED
 				$MediaInfo 				= $sonos->GetMediaInfo();		// gibt den Namen der Radiostation zurück. Der key ist "title"				
 				$VolumeInfo 			= $sonos->GetVolume();
 				$MuteInfo 				= $sonos->GetMute();
-				$TransportSettingsInfo 	= $sonos->GetTransportSettings();	
+//				$TransportSettingsInfo 	= $sonos->GetTransportSettings();	
 				
 				// Update status ------------------------------------------------------------------------------------------------------
 				switch ($Status) {
@@ -141,8 +141,8 @@
 				$room->setvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_FNC_VOLUME, $VolumeInfo); // Update Volume
 				$room->setvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_FNC_MUTE, $MuteInfo);     // Update Mute
 
-				// Update remote ------------------------------------------------------------------------------------------------------			
-
+	
+				// Identify player type  ------------------------------------------------------------------------------------------------------	
 				// Spotify:			[URI] => x-sonos-spotify
 				// Intunes Radio:	[URI] => x-rincon-mp3radio
 				// Library:			[URI] => x-file-cifs
@@ -150,17 +150,19 @@
 				// Group Slave:		[TrackURI] => x-rincon:RINCON_000E5872E10801400
 				
 				// Identify type of player
-				$PlayerType = "Other";
+				$PlayerType = "OTHER";
 				
-				if ($Status === 3) {
+//				if ($Status === 3) {
+//				
+//					$PlayerType = "STOP";
+//				
+//				}
+//				elseif (($PosInfo["URI"] != "") and 
+				if (($PosInfo["URI"] != "") and 
+						(substr($PosInfo["URI"], 0, 17) != "x-rincon-mp3radio") and 
+						(substr($PosInfo["URI"], 0, 6)  != "mms://")) {
 				
-					$PlayerType = "Stop";
-				
-				}
-				elseif (($PosInfo["URI"] != "") and 
-						(substr($PosInfo["URI"], 0, 17) != "x-rincon-mp3radio")) {
-				
-					$PlayerType = "Song";
+					$PlayerType = "SONG";
 					
 					$Title			= utf8_decode($PosInfo["title"]);
 					$AlbumArtURI	= $PosInfo["albumArtURI"];
@@ -179,13 +181,10 @@
 				}
 				elseif ((substr($PosInfo["URI"], 0, 17) === "x-rincon-mp3radio")) {
 				
-					 $PlayerType = "Radio"; 
+					 $PlayerType = "RADIO"; 
 					 
 					 if (isset($MediaInfo["title"])&&($MediaInfo["title"]!="")){
-						if($Artist!="Station: ". $MediaInfo["title"]){
-							// only ask tunein if there is a change in radio tune in
-							$Artist	= "Station: ".$MediaInfo["title"];
-							$Title	= "";
+							$Title	= $MediaInfo["title"];
 							$ar=$sonos->RadiotimeGetNowPlaying();
 							if($ar['logo']!="") {
 								// Intune Return
@@ -194,36 +193,52 @@
 								// No return
 									$AlbumArtURI="";
 							}
-						}
+
 						// do not set buffering info
 						if($PosInfo["streamContent"]!="ZPSTR_BUFFERING" &&
 							$PosInfo["streamContent"]!="ZPSTR_CONNECTING"
 							&& $PosInfo["streamContent"]!="") {
-								$Title  = utf8_decode(utf8_decode(preg_replace('#(.*?)\|(.*)#is','$1',$PosInfo["streamContent"]))); // Tunein sends additional Information which could be sperated by a |
+								$Artist  = utf8_decode(utf8_decode(preg_replace('#(.*?)\|(.*)#is','$1',$PosInfo["streamContent"]))); // Tunein sends additional Information which could be sperated by a |
 						 } 
 					}
 				}
+				elseif ((substr($PosInfo["URI"], 0, 6) === "mms://")) {
+					
+					$PlayerType = "RADIO"; 
+					$ar=$sonos->RadiotimeGetNowPlaying();
+					$AlbumArtURI = $ar['logo'];
+					$Title  = utf8_decode($MediaInfo["title"]);
+
+				}				
 				elseif ($PosInfo["URI"] === "") {
 					if ((substr($PosInfo["TrackURI"], 0, 17) === "x-sonos-htastream"))
-					 $PlayerType = "External";
+					 $PlayerType = "EXTERNAL";
 					elseif ((substr($PosInfo["TrackURI"], 0, 8) === "x-rincon")) {
-					 $PlayerType = "Groupmember"; } 
+					 $PlayerType = "GROUPMEMBER"; } 
 					}
-				else { $PlayerType = "Other"; } ;
+				else { $PlayerType = "OTHER"; } ;
 				
-				// Set HTML Remote
+				// Check if player type has changed an execute callback ------------------------------------------------------------------------------------------------------		
+				$PreviousPlayerType = $room->getvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_VAR_PLAYERDETAILS);
+				if ($PlayerType != $PreviousPlayerType) {
+					IPSUtils_Include ("IPSSonos_Custom.inc.php",        "IPSLibrary::config::modules::IPSSonos");	
+					IPSSonos_Custom_PlayerType($roomName, $PlayerType);	
+				}
+				$room->setvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_VAR_PLAYERDETAILS, $PlayerType);
+				
+				// Update remote ------------------------------------------------------------------------------------------------------						
 				$HTMLRemote = 				"<table border=\"0\" cellpadding=\"1\" cellspacing=\"1\" style=\"width: 200;\">";
 				$HTMLRemote = $HTMLRemote.		"<tbody>";	
 
 				switch ($PlayerType) {
 				
-					case "Stop":
+					case "STOP":
 						$HTMLRemote = $HTMLRemote.			"<tr>";
 						$HTMLRemote = $HTMLRemote.				"<td>Player angehalten</td>"; 
 						$HTMLRemote = $HTMLRemote.			"</tr>";				
 					break;
 					
-					case "Song":
+					case "SONG":
 						$HTMLRemote = $HTMLRemote. 			"<tr>";
 						$HTMLRemote = $HTMLRemote.				"<td rowspan=\"3\"><img alt=\"\" height=\"150\" src=\"".$AlbumArtURI."\" width=\"150\" /></td>";
 						$HTMLRemote = $HTMLRemote.				"<td>&nbsp;<b>".$Title."</b></td>";
@@ -252,20 +267,20 @@
 						$HTMLRemote = $HTMLRemote.			"</tr>";		
 					break;
 					
-					case "Radio":	
+					case "RADIO":	
 						$HTMLRemote = $HTMLRemote. 			"<tr>";
 						$HTMLRemote = $HTMLRemote.    			"<td rowspan=\"3\"><img alt=\"\" src=\"".$AlbumArtURI."\" /></td>";  
-						$HTMLRemote = $HTMLRemote.				"<td style=\"text-align: left; vertical-align: top;\">&nbsp;<b>".$Artist."</b></td>";
+						$HTMLRemote = $HTMLRemote.				"<td style=\"text-align: left; vertical-align: top;\">&nbsp;<b>".$Title."</b></td>";
 						$HTMLRemote = $HTMLRemote.			"</tr>";
 						$HTMLRemote = $HTMLRemote.			"<tr>";
-						$HTMLRemote = $HTMLRemote. 				"<td style=\"text-align: left; vertical-align: top;\">".$Title."  </td>";
+						$HTMLRemote = $HTMLRemote. 				"<td style=\"text-align: left; vertical-align: top;\">".$Artist."  </td>";
 						$HTMLRemote = $HTMLRemote.			"</tr>";
 						$HTMLRemote = $HTMLRemote.			"<tr>";
 						$HTMLRemote = $HTMLRemote.				"<td> </td>"; // Additional row for enhancements
 						$HTMLRemote = $HTMLRemote.			"</tr>";		
 					break;
 					
-					case "Groupmember":
+					case "GROUPMEMBER":
 						$HTMLRemote = $HTMLRemote.			"<tr>";
 						$HTMLRemote = $HTMLRemote.				"<td>Player ist in Gruppe</td>"; 
 						$HTMLRemote = $HTMLRemote.			"</tr>";
@@ -274,7 +289,7 @@
 						$HTMLRemote = $HTMLRemote.			"</tr>";						
 					break;
 					
-					case "External":
+					case "EXTERNAL":
 						$HTMLRemote = $HTMLRemote.			"<tr>";
 						$HTMLRemote = $HTMLRemote.				"<td>Player verwendet externen Eingang</td>"; 
 						$HTMLRemote = $HTMLRemote.			"</tr>";
@@ -283,7 +298,7 @@
 						$HTMLRemote = $HTMLRemote.			"</tr>";						
 					break;
 					
-					case "Other":
+					case "OTHER":
 						$HTMLRemote = $HTMLRemote.			"<tr>";
 						$HTMLRemote = $HTMLRemote.				"<td>Player verwendet andere Quelle</td>"; 
 						$HTMLRemote = $HTMLRemote.			"</tr>";

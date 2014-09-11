@@ -8,14 +8,14 @@
 	 * @file          IPSSonos_Configuration.inc.php
 	 * @author        joki
 	 * @version
-	 * Version 1.0.0, 01.09.2014<br/>
+	 * Version 1.0.2, 11.09.2014<br/>
 	 *
 	 */
 	IPSUtils_Include ("IPSSonos_Constants.inc.php",      "IPSLibrary::app::modules::IPSSonos");
 	
 	function IPSSonos_GetServerConfiguration() {
 		return array(
-			IPSSONOS_VAR_IPADDR		=>	'192.168.20.103',	// IP Adresse eines Sonosgeräts, dass möglichst immer an ist. Steuert zentrale Funktionen wie z.B. Synchronisation der Playlists
+			IPSSONOS_VAR_IPADDR		=>	'192.168.20.103',	// IP Adresse eines Players (keine Bridge!), dass möglichst immer an ist. Steuert zentrale Funktionen wie z.B. Synchronisation der Playlists
 			);
 	}
 

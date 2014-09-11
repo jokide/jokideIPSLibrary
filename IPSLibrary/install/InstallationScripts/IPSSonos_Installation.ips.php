@@ -32,7 +32,7 @@
 	 * @file          IPSSonos_Installation.ips.php
 	 * @author        joki
 	 * @version
-	 * Version 1.0.0, 01.09.2014<br/>
+	 * Version 1.0.2, 09.09.2014<br/>
 	 *
 	 * Script zur kompletten Installation der IPSSonos Steuerung.
 	 *
@@ -76,15 +76,6 @@
 	$WFC10_TabPaneIcon    = $moduleManager->GetConfigValue('TabPaneIcon', 'WFC10');
 	$WFC10_TabPaneOrder   = $moduleManager->GetConfigValueInt('TabPaneOrder', 'WFC10');
 
-//	$Mobile_Enabled       = $moduleManager->GetConfigValue('Enabled', 'Mobile');
-//	$Mobile_Path          = $moduleManager->GetConfigValue('Path', 'Mobile');
-//	$Mobile_PathOrder     = $moduleManager->GetConfigValueInt('PathOrder', 'Mobile');
-//	$Mobile_PathIcon      = $moduleManager->GetConfigValue('PathIcon', 'Mobile');
-//	$Mobile_Name          = $moduleManager->GetConfigValue('Name', 'Mobile');
-//	$Mobile_Order         = $moduleManager->GetConfigValueInt('Order', 'Mobile');
-//	$Mobile_Icon          = $moduleManager->GetConfigValue('Icon', 'Mobile');
-
-
 	/* ---------------------------------------------------------------------- */
 	/* IPSSonos Installation                                                  */
 	/* ---------------------------------------------------------------------- */
@@ -107,7 +98,6 @@
 	CreateProfile_Associations 	('IPSSonos_Query',       		array("1", "3", "5", "10", "20", "30", "60", "180", "300"));
 	CreateProfile_Switch 		('IPSSonos_Power',            	'Aus', 'An', "", -1, 0x00ff00);
 	CreateProfile_Switch 		('IPSSonos_PowerOnDelay',       'Aus', 'An', "", -1, 0xff9900);
-
 	
 	$id_IPSSonosServerId = CreateDummyInstance("IPSSonos_Server", $CategoryIdData, 10);
 	$id_RoomIds          = CreateVariable(IPSSONOS_VAR_ROOMIDS,         3 /*String*/,  $id_IPSSonosServerId, 10, '',    				null,              		'',		'');
@@ -116,7 +106,6 @@
 	$id_Query        	 = CreateVariable(IPSSONOS_VAR_QUERY,       	0 /*Boolean*/, $id_IPSSonosServerId, 40, '~Switch',				$id_ScriptSettings,		false,	'');
 	$id_QueryTime      	 = CreateVariable(IPSSONOS_VAR_QUERYTIME,      	1 /*Integer*/, $id_IPSSonosServerId, 50, 'IPSSonos_Query',		$id_ScriptSettings,		1,		'');
 
-	
 	// Create Timer for Query Sonos
 	$id_EventQuery		 	= CreateTimer_CyclicBySeconds (IPSSONOS_EVT_QUERY, $id_ScriptSettings, 1, $Active=false);
 	$id_EventPowerOnDelay	= CreateTimer_CyclicBySeconds (IPSSONOS_EVT_POWERONDELAY, $id_ScriptSettings, 5, $Active=false);
@@ -125,10 +114,9 @@
 	$ServerConfig = IPSSonos_GetServerConfiguration();
 	SetValue($id_IPAddr, $ServerConfig[IPSSONOS_VAR_IPADDR]);
 	
-	// ===================================================================================================
-	// Add Rooms
-	// ===================================================================================================
-
+	/* ---------------------------------------------------------------------- */
+	/* Add Rooms                                                              */
+	/* ---------------------------------------------------------------------- */
 	$RoomId=0;
 	$RoomConfig = IPSSonos_GetRoomConfiguration();
 
@@ -142,14 +130,16 @@
 		$RINCON         	= CreateVariable(IPSSONOS_VAR_RINCON,			3 /*String*/,  $RoomInstanceId,  30, '', 						null, 				'', '');
 		$VolumeId      		= CreateVariable(IPSSONOS_VAR_VOLUME,			1 /*Integer*/, $RoomInstanceId,  40, 'IPSSonos_Volume',      	$id_ScriptSettings, IPSSONOS_VAL_VOLUME_DEFAULT, 'Intensity');
 		$TransportId    	= CreateVariable(IPSSONOS_VAR_TRANSPORT,		1 /*Integer*/, $RoomInstanceId,  50, 'IPSSonos_Transport',   	$id_ScriptSettings, IPSSONOS_VAL_TRANSPORT, 'Speaker');
-		$PLAYLIST         	= CreateVariable(IPSSONOS_VAR_PLAYLIST,    		1 /*Integer*/, $RoomInstanceId,  60, 'IPSSonos_Playlists', 	$id_ScriptSettings, IPSSONOS_VAL_PLAYLIST, '');
+		$PLAYLIST         	= CreateVariable(IPSSONOS_VAR_PLAYLIST,    		1 /*Integer*/, $RoomInstanceId,  60, 'IPSSonos_Playlists', 		$id_ScriptSettings, IPSSONOS_VAL_PLAYLIST, '');
 		$RADIOSTATION       = CreateVariable(IPSSONOS_VAR_RADIOSTATION,		1 /*Integer*/, $RoomInstanceId,  70, 'IPSSonos_Radiostations',	$id_ScriptSettings, IPSSONOS_VAL_RADIOSTATION, '');
 		$MutingId       	= CreateVariable(IPSSONOS_VAR_MUTE,				0 /*Boolean*/, $RoomInstanceId,  80, 'IPSSonos_Mute',        	$id_ScriptSettings, IPSSONOS_VAL_MUTE_DEFAULT, '');
 		$ShuffleId       	= CreateVariable(IPSSONOS_VAR_SHUFFLE,			0 /*Boolean*/, $RoomInstanceId,  90, 'IPSSonos_Shuffle',    	$id_ScriptSettings, false, '');
 		$RepeatId       	= CreateVariable(IPSSONOS_VAR_REPEAT,			0 /*Boolean*/, $RoomInstanceId,  100, 'IPSSonos_Repeat',     	$id_ScriptSettings, false, '');
-		$RemoteControlId  	= CreateVariable(IPSSONOS_VAR_REMOTE,   		3 /*String*/,  $RoomInstanceId,  110 , '~HTMLBox', null, '<iframe frameborder="0" width="100%" src="../user/IPSSonosPlayer/IPSSonosPlayer_MP3Control.php" height=255px </iframe>');
-		$CoverURIId  		= CreateVariable(IPSSONOS_VAR_COVERURI,   		3 /*String*/,  $RoomInstanceId,  120 ,	'', 						null, 				'', '');
-	
+		$RemoteControlId  	= CreateVariable(IPSSONOS_VAR_REMOTE,   		3 /*String*/,  $RoomInstanceId,  110 , '~HTMLBox', 				null, '');
+//		$CoverURIId  		= CreateVariable(IPSSONOS_VAR_COVERURI,   		3 /*String*/,  $RoomInstanceId,  120 ,	'', 						null, 				'', '');
+		$PlayerDetails  	= CreateVariable(IPSSONOS_VAR_PLAYERDETAILS,   	3 /*String*/,  $RoomInstanceId,  120 ,	'', 					null, 				'', '');
+
+		
 		// Werte aus Config zuweisen
 		SetValue($IPAdrr, $GroupData[IPSSONOS_VAR_IPADDR]);
 		SetValue($RINCON, $GroupData[IPSSONOS_VAR_RINCON]);
@@ -157,10 +147,10 @@
 
 	SetValue($id_RoomIds, implode(',',$RoomIds));
 	SetValue($id_RoomCount, $RoomId);
-
-	// ----------------------------------------------------------------------------------------------------------------------------
-	// Webfront Installation
-	// ----------------------------------------------------------------------------------------------------------------------------
+	
+	/* ---------------------------------------------------------------------- */
+	/* Webfront Installation                                                  */
+	/* ---------------------------------------------------------------------- */
 	if ($WFC10_Enabled) {
 		$categoryIdWebFront         = CreateCategoryPath($WFC10_Path);
 		EmptyCategory($categoryIdWebFront);

@@ -24,7 +24,7 @@
 	 * @file          IPSSonos_Constants.inc.php
 	 * @author        joki
 	 * @version
-	 * Version 1.0.0, 01.09.2014<br/>
+	 * Version 1.0.2, 09.09.2014<br/>
 	 *
 	 */
 
@@ -90,7 +90,6 @@
 	// Variablen Definitionen
 	define ('IPSSONOS_VAR_ROOMCOUNT',					'ROOM_COUNT');
 	define ('IPSSONOS_VAR_ROOMIDS',						'ROOM_IDS');
-//	define ('IPSSONOS_VAR_MODESERVERDEBUG',				'MODE_SERVERDEBUG');
 	define ('IPSSONOS_VAR_IPADDR',						'IPADDR');
 	define ('IPSSONOS_VAR_RINCON',						'RINCON');
 	define ('IPSSONOS_VAR_REMOTE',						'REMOTE');
@@ -102,7 +101,7 @@
 	define ('IPSSONOS_VAR_TRANSPORT',					'TRANSPORT');
 	define ('IPSSONOS_VAR_SHUFFLE',						'SHUFFLE');
 	define ('IPSSONOS_VAR_REPEAT',						'REPEAT');	
-	define ('IPSSONOS_VAR_COVERURI',					'COVERURI');	
+//	define ('IPSSONOS_VAR_COVERURI',					'COVERURI');	
 	define ('IPSSONOS_VAR_TITLE',						'TITLE');	
 	define ('IPSSONOS_VAR_ALBUM',						'ALBUM');	
 	define ('IPSSONOS_VAR_ARTIST',						'ARTIST');		
@@ -110,10 +109,12 @@
 	define ('IPSSONOS_VAR_POSITION',					'POSITION');	
 	define ('IPSSONOS_VAR_DURATION',					'DURATION');	
 	define ('IPSSONOS_VAR_QUERY',						'QUERY');	
-	define ('IPSSONOS_VAR_QUERYTIME',					'QUERYTIME');		
+	define ('IPSSONOS_VAR_QUERYTIME',					'QUERYTIME');	
+	define ('IPSSONOS_VAR_PLAYERDETAILS',				'PLAYERDETAILS');	
 	
 	define ('IPSSONOS_EVT_QUERY',						'QUERYSONOS');	
 	define ('IPSSONOS_EVT_POWERONDELAY',				'POWERONDELAY');
+
 	
 	/** @}*/
 ?>

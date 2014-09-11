@@ -21,7 +21,7 @@
 	 *
 	 * IPSxbmc Server Konstanten
 	 *
-	 * @file          IPSxbmc_Constants.inc.php
+	 * @file          IPSXBMC_Constants.inc.php
 	 * @author        Joerg Kling
 	 * @version
 	 * Version 0.9.4, 07.06.2014<br/>
@@ -29,75 +29,82 @@
 	 */
 
 	// Kommunikations Kommandos
-	define ('IPSxbmc_CMD_AUDIO',						'AUD');
-	define ('IPSxbmc_CMD_ROOM',						'ROO');
-	define ('IPSxbmc_CMD_SERVER',						'SRV');	
+	define ('IPSXBMC_CMD_PLAYER',						'AUD');
+	define ('IPSXBMC_CMD_ROOM',						'ROO');
+	define ('IPSXBMC_CMD_SERVER',						'SRV');	
 
 
 	// Kommunikations Actions
-	define ('IPSxbmc_FNC_POWER',						'PWR');
-	define ('IPSxbmc_FNC_VOLUME',						'VOL');
-	define ('IPSxbmc_FNC_VOLUME_INC',					'VIN');
-	define ('IPSxbmc_FNC_VOLUME_DEC',					'VDE');
-	define ('IPSxbmc_FNC_VOLUME_RMP',					'VOLUMERMP');	
-	define ('IPSxbmc_FNC_VOLUME_RMPMUTE',				'VOLUMERMPMUTE');
-	define ('IPSxbmc_FNC_VOLUME_RMPMUTESLOW',			'VOLUMERMPMUTESLOW');		
-	define ('IPSxbmc_FNC_MUTE',						'MUT');
-	define ('IPSxbmc_FNC_PLAY',						'PLA');
-	define ('IPSxbmc_FNC_PAUSE',						'PAU');
-	define ('IPSxbmc_FNC_STOP',						'STP');	
-	define ('IPSxbmc_FNC_NEXT',						'NXT');
-	define ('IPSxbmc_FNC_PREVIOUS',					'PRV');	
-	define ('IPSxbmc_FNC_SYNCPL',						'SYNCPL');
-	define ('IPSxbmc_FNC_PLAYPLID',					'PLAYPLID');
-	define ('IPSxbmc_FNC_PLAYPLNAME',					'PLAYPLNAME');
-	define ('IPSxbmc_FNC_SYNCRD',						'SYNCRD');
-	define ('IPSxbmc_FNC_PLAYRDID',					'PLAYRDID');
-	define ('IPSxbmc_FNC_PLAYRDNAME',					'PLAYRDNAME');		
-	define ('IPSxbmc_FNC_ROOMS',						'ROOMS');
-	define ('IPSxbmc_FNC_ROOMSACTIVE',					'ROOMSACTIVE');	
-	define ('IPSxbmc_FNC_SHUFFLE',						'SHUFFLE');	
-	define ('IPSxbmc_FNC_REPEAT',						'REPEAT');			
+	define ('IPSXBMC_FNC_POWER',						'PWR');
+	define ('IPSXBMC_FNC_VOLUME',						'VOL');
+	define ('IPSXBMC_FNC_VOLUME_INC',					'VIN');
+	define ('IPSXBMC_FNC_VOLUME_DEC',					'VDE');
+	define ('IPSXBMC_FNC_VOLUME_RMP',					'VOLUMERMP');	
+	define ('IPSXBMC_FNC_VOLUME_RMPMUTE',				'VOLUMERMPMUTE');
+	define ('IPSXBMC_FNC_VOLUME_RMPMUTESLOW',			'VOLUMERMPMUTESLOW');		
+	define ('IPSXBMC_FNC_MUTE',						'MUT');
+	define ('IPSXBMC_FNC_PLAY',						'PLA');
+	define ('IPSXBMC_FNC_PAUSE',						'PAU');
+	define ('IPSXBMC_FNC_STOP',						'STP');	
+	define ('IPSXBMC_FNC_NEXT',						'NXT');
+	define ('IPSXBMC_FNC_PREVIOUS',					'PRV');	
+	define ('IPSXBMC_FNC_SYNCPL',						'SYNCPL');
+	define ('IPSXBMC_FNC_PLAYPLID',					'PLAYPLID');
+	define ('IPSXBMC_FNC_PLAYPLNAME',					'PLAYPLNAME');
+	define ('IPSXBMC_FNC_SYNCRD',						'SYNCRD');
+	define ('IPSXBMC_FNC_PLAYRDID',					'PLAYRDID');
+	define ('IPSXBMC_FNC_PLAYRDNAME',					'PLAYRDNAME');		
+	define ('IPSXBMC_FNC_ROOMS',						'ROOMS');
+	define ('IPSXBMC_FNC_ROOMSACTIVE',					'ROOMSACTIVE');	
+	define ('IPSXBMC_FNC_SHUFFLE',						'SHUFFLE');	
+	define ('IPSXBMC_FNC_REPEAT',						'REPEAT');	
+	define ('IPSXBMC_FNC_INPUT',						'INPUT');		
+	
 
 	//Define Transport
-	define ('IPSxbmc_TRA_PREVIOUS',					'0');	
-	define ('IPSxbmc_TRA_PLAY',						'1');
-	define ('IPSxbmc_TRA_PAUSE',						'2');	
-	define ('IPSxbmc_TRA_STOP',						'3');
-	define ('IPSxbmc_TRA_NEXT',						'4');	
+	define ('IPSXBMC_TRA_PREVIOUS',					'0');	
+	define ('IPSXBMC_TRA_PLAY',						'1');
+	define ('IPSXBMC_TRA_PAUSE',						'2');	
+	define ('IPSXBMC_TRA_STOP',						'3');
+	define ('IPSXBMC_TRA_NEXT',						'4');	
 
 	//Define Variavle Values 
-	define ('IPSxbmc_VAL_BOOLEAN_FALSE',				0);
-	define ('IPSxbmc_VAL_BOOLEAN_TRUE',				1);
-	define ('IPSxbmc_VAL_VOLUME_DEFAULT',				20);
+	define ('IPSXBMC_VAL_BOOLEAN_FALSE',				0);
+	define ('IPSXBMC_VAL_BOOLEAN_TRUE',				1);
+	define ('IPSXBMC_VAL_VOLUME_DEFAULT',				20);
 
-	define ('IPSxbmc_VAL_MUTE_OFF',					IPSxbmc_VAL_BOOLEAN_FALSE);
-	define ('IPSxbmc_VAL_MUTE_ON',						IPSxbmc_VAL_BOOLEAN_TRUE);
-	define ('IPSxbmc_VAL_MUTE_DEFAULT',				IPSxbmc_VAL_BOOLEAN_FALSE);
+	define ('IPSXBMC_VAL_MUTE_OFF',					IPSXBMC_VAL_BOOLEAN_FALSE);
+	define ('IPSXBMC_VAL_MUTE_ON',						IPSXBMC_VAL_BOOLEAN_TRUE);
+	define ('IPSXBMC_VAL_MUTE_DEFAULT',				IPSXBMC_VAL_BOOLEAN_FALSE);
 
-//	define ('IPSxbmc_VAL_POWER_OFF',					IPSxbmc_VAL_BOOLEAN_FALSE);
-//	define ('IPSxbmc_VAL_POWER_ON',					IPSxbmc_VAL_BOOLEAN_TRUE);
-	define ('IPSxbmc_VAL_POWER_DEFAULT',				IPSxbmc_VAL_BOOLEAN_FALSE);
-	define ('IPSxbmc_VAL_TRANSPORT',				    3);
-	define ('IPSxbmc_VAL_PLAYLIST',				    0);
-	define ('IPSxbmc_VAL_RADIOSTATION',			  	999);	
+//	define ('IPSXBMC_VAL_POWER_OFF',					IPSXBMC_VAL_BOOLEAN_FALSE);
+//	define ('IPSXBMC_VAL_POWER_ON',					IPSXBMC_VAL_BOOLEAN_TRUE);
+	define ('IPSXBMC_VAL_POWER_DEFAULT',				IPSXBMC_VAL_BOOLEAN_FALSE);
+	define ('IPSXBMC_VAL_TRANSPORT',				    3);
+	define ('IPSXBMC_VAL_PLAYLIST',				    0);
+	define ('IPSXBMC_VAL_RADIOSTATION',			  	999);	
 
 
 	// Variablen Definitionen
-	define ('IPSxbmc_VAR_ROOMCOUNT',					'ROOM_COUNT');
-	define ('IPSxbmc_VAR_ROOMIDS',						'ROOM_IDS');
-	define ('IPSxbmc_VAR_MODESERVERDEBUG',				'MODE_SERVERDEBUG');
-	define ('IPSxbmc_VAR_IPADDR',						'IPADDR');
-	define ('IPSxbmc_VAR_RINCON',						'RINCON');
-	define ('IPSxbmc_VAR_REMOTE',						'REMOTE');
-	define ('IPSxbmc_VAR_PLAYLIST',					'PLAYLIST');
-	define ('IPSxbmc_VAR_RADIOSTATION',				'RADIOSTATION');	
-	define ('IPSxbmc_VAR_ROOMPOWER',					'ROOMPOWER');
-	define ('IPSxbmc_VAR_MUTE',						'MUTE');
-	define ('IPSxbmc_VAR_VOLUME',						'VOLUME');
-	define ('IPSxbmc_VAR_TRANSPORT',					'TRANSPORT');
-	define ('IPSxbmc_VAR_SHUFFLE',						'SHUFFLE');
-	define ('IPSxbmc_VAR_REPEAT',						'REPEAT');	
-
+	define ('IPSXBMC_VAR_ROOMCOUNT',					'ROOM_COUNT');
+	define ('IPSXBMC_VAR_ROOMIDS',						'ROOM_IDS');
+	define ('IPSXBMC_VAR_MODESERVERDEBUG',				'MODE_SERVERDEBUG');
+	define ('IPSXBMC_VAR_IPADDR',						'IPADDR');
+	define ('IPSXBMC_VAR_RINCON',						'RINCON');
+	define ('IPSXBMC_VAR_REMOTE',						'REMOTE');
+	define ('IPSXBMC_VAR_PLAYLIST',						'PLAYLIST');
+	define ('IPSXBMC_VAR_RADIOSTATION',					'RADIOSTATION');	
+	define ('IPSXBMC_VAR_ROOMPOWER',					'ROOMPOWER');
+	define ('IPSXBMC_VAR_MUTE',							'MUTE');
+	define ('IPSXBMC_VAR_VOLUME',						'VOLUME');
+	define ('IPSXBMC_VAR_TRANSPORT',					'TRANSPORT');
+	define ('IPSXBMC_VAR_SHUFFLE',						'SHUFFLE');
+	define ('IPSXBMC_VAR_REPEAT',						'REPEAT');	
+	define ('IPSXBMC_VAR_POSITION',						'POSITION');
+	define ('IPSXBMC_VAR_TITLE',						'TITLE');	
+	define ('IPSXBMC_VAR_COMREGVAR',					'COMREGVAR');	
+	define ('IPSXBMC_VAR_SOCKETSEND',					'SOCKETSEND');	
+	define ('IPSXBMC_VAR_FILE',							'FILE');	
+	define ('IPSXBMC_VAR_STATUS',						'STATUS');		
 	/** @}*/
 ?>

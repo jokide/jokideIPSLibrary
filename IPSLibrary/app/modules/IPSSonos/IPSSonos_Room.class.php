@@ -31,7 +31,7 @@
     *
 	* @author        joki
 	* @version
-	* Version 1.0.1, 08.09.2014<br/>
+	* Version 1.0.2, 11.09.2014<br/>
     */
 	IPSUtils_Include ("IPSSonos_Constants.inc.php",       "IPSLibrary::app::modules::IPSSonos");
 	IPSUtils_Include ("IPSSonos_Configuration.inc.php",   "IPSLibrary::config::modules::IPSSonos");
@@ -79,6 +79,7 @@
 			IPSSONOS_FNC_PLAYRDNAME			=> IPSSONOS_VAR_RADIOSTATION,				
 			IPSSONOS_FNC_SHUFFLE			=> IPSSONOS_VAR_SHUFFLE,
 			IPSSONOS_FNC_REPEAT				=> IPSSONOS_VAR_REPEAT,
+			IPSSONOS_VAR_PLAYERDETAILS		=> IPSSONOS_VAR_PLAYERDETAILS,
 			);
 			
 		$this->IPAddr = GetValue(IPS_GetObjectIDByIdent('IPADDR', $this->instanceId));
@@ -161,7 +162,7 @@
 					switch ($function) {
 						case IPSSONOS_FNC_POWER:						
 							//Switch Room
-							if ($value == false) {
+ 							if ($value == false) {
 								// Check that room is on
 								if( $this->GetValue(IPSSONOS_CMD_ROOM, IPSSONOS_FNC_POWER) == false) {
 									$this->LogWrn('Raum '.$this->roomName.' konnte ausgeschaltet werden, da Gerät bereits ausgeschaltet ist!');
@@ -173,7 +174,7 @@
 									return false;
 								}
 							}
-							$result   = true;
+							$result   = true; 
 							break;							
 						default:
 							break;
@@ -243,7 +244,7 @@
 		 * @param string $msg Meldung 
 		 */
 		private function LogWrn($msg) {
-			IPSLogger_Wrn(__file__, $msg);
+			IPSLogger_Wrn("IPSSonos", $msg);
 		}
 		
 		/**
@@ -254,7 +255,7 @@
 		 * @param string $msg Meldung 
 		 */
 		private function LogErr($msg) {
-			IPSLogger_Err(__file__, $msg);
+			IPSLogger_Err("IPSSonos", $msg);
 		}
 
 		/**

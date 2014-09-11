@@ -33,7 +33,6 @@
 	IPSUtils_Include ("IPSxbmc_Room.class.php",        "IPSLibrary::app::modules::IPSxbmc");
 	IPSUtils_Include ("IPSxbmc_Custom.inc.php",        "IPSLibrary::config::modules::IPSxbmc");
 	IPSUtils_Include ("IPSxbmc.inc.php", 				"IPSLibrary::app::modules::IPSxbmc");
-	IPSUtils_Include ("PHPxbmc.inc.php", 				"IPSLibrary::app::modules::IPSxbmc");
 
    /**
     * @class IPSxbmc_Server
@@ -73,8 +72,8 @@
 		 */
 		public function __construct($instanceId) {
 			$this->instanceId   = $instanceId;
-			$this->IPAddr		= GetValue(IPS_GetObjectIDByIdent(IPSxbmc_VAR_IPADDR, $this->instanceId));
-			$this->debugEnabled = GetValue(IPS_GetObjectIDByIdent(IPSxbmc_VAR_MODESERVERDEBUG, $this->instanceId));
+//			$this->IPAddr		= GetValue(IPS_GetObjectIDByIdent(IPSXBMC_VAR_IPADDR, $this->instanceId));
+//			$this->debugEnabled = GetValue(IPS_GetObjectIDByIdent(IPSXBMC_VAR_MODESERVERDEBUG, $this->instanceId));
 			$this->retryCount  = 0;
 		}
 
@@ -165,7 +164,7 @@
 		 * @return IPSxbmc_Room IPSxbmc Room Object
 		 */
 		private function GetRoom($roomName) {
-			$roomIds = GetValue(IPS_GetObjectIDByIdent(IPSxbmc_VAR_ROOMIDS, $this->instanceId));
+			$roomIds = GetValue(IPS_GetObjectIDByIdent(IPSXBMC_VAR_ROOMIDS, $this->instanceId));
 			if ($roomIds=="") {
 				return false;
 			}
@@ -199,7 +198,7 @@
 		 * @return IPSxbmc_Room IPSxbmc Room Object
 		 */
 		private function GetAllRooms() {
-			$roomIds = GetValue(IPS_GetObjectIDByIdent(IPSxbmc_VAR_ROOMIDS, $this->instanceId));
+			$roomIds = GetValue(IPS_GetObjectIDByIdent(IPSXBMC_VAR_ROOMIDS, $this->instanceId));
 			if ($roomIds=="") {
 				return false;
 			}
@@ -226,24 +225,24 @@
 			$result = '';
 			switch ($command) {
 
-				case IPSxbmc_CMD_ROOM:		
+				case IPSXBMC_CMD_ROOM:		
 					
 					$room = $this->GetRoom($roomName);				
 					$result = $room->GetValue ($command, $function);
 
 					break;
-				case IPSxbmc_CMD_AUDIO:
+				case IPSXBMC_CMD_PLAYER:
 						$room = $this->GetRoom($roomName);				
 						$result = $room->GetValue ($command, $function);
 					break;
 				
-				case IPSxbmc_CMD_SERVER:
+				case IPSXBMC_CMD_SERVER:
 					
 					switch ($function) {
-						case IPSxbmc_FNC_ROOMS:
+						case IPSXBMC_FNC_ROOMS:
 							$result = $this->GetAllRooms();
 							break;	
-						case IPSxbmc_FNC_ROOMSACTIVE:
+						case IPSXBMC_FNC_ROOMSACTIVE:
 							$result = $this->GetActiveRooms();
 							break;									
 						default:
@@ -276,67 +275,69 @@
 					
 			//*-------------------------------------------------------------*
 			switch ($command) {
-				case IPSxbmc_CMD_AUDIO:
+				case IPSXBMC_CMD_PLAYER:
 				
 					// xbmc initialisieren
 					$room = $this->GetRoom($roomName);
-					$xbmc = new PHPxbmc($room->IPAddr); 	
 					
-					if ($room->ValidateValue($xbmc, $command, $function, $value) == false) {
+					if ($room->ValidateValue($command, $function, $value) == false) {
 						return false;
 					}					
 					switch ($function) {
-						case IPSxbmc_FNC_VOLUME:
+						case IPSXBMC_FNC_VOLUME:
 							break;								
-						case IPSxbmc_FNC_VOLUME_INC:	
+						case IPSXBMC_FNC_VOLUME_INC:	
 							break;	
-						case IPSxbmc_FNC_VOLUME_DEC:							
+						case IPSXBMC_FNC_VOLUME_DEC:							
 							break;
-						case IPSxbmc_FNC_PLAY:	
-								RegVar_SendText($room->$regvarId, '{"jsonrpc": "2.0", "method": "Player.PlayPause", "params": { "playerid": 1 }, "id": 1}');
+						case IPSXBMC_FNC_PLAY:	
+								RegVar_SendText($room->regvarId, '{"jsonrpc": "2.0", "method": "Player.PlayPause", "params": { "playerid": 1 }, "id": 1}');
 								$result = true;
 							break;
-						case IPSxbmc_FNC_STOP:	
+						case IPSXBMC_FNC_STOP:	
 							break;
-						case IPSxbmc_FNC_PAUSE:	
+						case IPSXBMC_FNC_PAUSE:	
 							break;
-						case IPSxbmc_FNC_NEXT:	
+						case IPSXBMC_FNC_NEXT:	
 							break;
-						case IPSxbmc_FNC_MUTE:	
+						case IPSXBMC_FNC_MUTE:	
 							break;
-						case IPSxbmc_FNC_CONTEXTMENU:	
-								RegVar_SendText($room->$regvarId, '{"jsonrpc": "2.0", "method": "Input.ContextMenu", "id": 1}');
-							break;
-						case IPSxbmc_FNC_UP:	
-								RegVar_SendText($room->$regvarId, '{"jsonrpc": "2.0", "method": "Input.Up", "id": 1}');
-							break;
-						case IPSxbmc_FNC_SHOWOSD:	
-								RegVar_SendText($room->$regvarId, '{"jsonrpc": "2.0", "method": "Input.ShowOSD", "id": 1}');
-							break;							
-						case IPSxbmc_FNC_SELECT:	
-								RegVar_SendText($room->$regvarId, '{"jsonrpc": "2.0", "method": "Input.Select", "id": 1}');
-							break;
-						case IPSxbmc_FNC_RIGHT:	
-								RegVar_SendText($room->$regvarId, '{"jsonrpc": "2.0", "method": "Input.Right", "id": 1}');
-							break;
-						case IPSxbmc_FNC_LEFT:	
-								RegVar_SendText($room->$regvarId, '{"jsonrpc": "2.0", "method": "Input.Left", "id": 1}');
-							break;
-						case IPSxbmc_FNC_INFO:	
-								RegVar_SendText($room->$regvarId, '{"jsonrpc": "2.0", "method": "Input.Info", "id": 1}');
-							break;
-						case IPSxbmc_FNC_DOWN:	
-								RegVar_SendText($room->$regvarId, '{"jsonrpc": "2.0", "method": "Input.Down", "id": 1}');
-							break;													
-						case IPSxbmc_FNC_BACK:	
-								RegVar_SendText($room->$regvarId, '{"jsonrpc": "2.0", "method": "Input.Back", "id": 1}');
-							break;							
-						case IPSxbmc_FNC_FORWARD:	
-								RegVar_SendText($room->$regvarId, '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": 1,"value":"smallforward" }, "id": 1}');
-							break;	
-						case IPSxbmc_FNC_PREVIOUS:	
-								RegVar_SendText($room->$regvarId, '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": 1,"value":"smallbackward" }, "id": 1}');
-							break;							
+						case IPSXBMC_FNC_INPUT:
+							switch ($value) {
+								case "ContextMenu":	
+									RegVar_SendText($room->regvarId, '{"jsonrpc": "2.0", "method": "Input.ContextMenu", "id": 1}');
+									break;
+								case "Select":	
+									RegVar_SendText($room->regvarId, '{"jsonrpc": "2.0", "method": "Input.Select", "id": 1}');
+									break;
+								case "Right":	
+									RegVar_SendText($room->regvarId, '{"jsonrpc": "2.0", "method": "Input.Right", "id": 1}');
+									break;	
+								case "Left":	
+									RegVar_SendText($room->regvarId, '{"jsonrpc": "2.0", "method": "Input.Left", "id": 1}');
+									break;	
+								case "Up":	
+									RegVar_SendText($room->regvarId, '{"jsonrpc": "2.0", "method": "Input.Up", "id": 1}');
+									break;	
+								case "Down":	
+									RegVar_SendText($room->regvarId, '{"jsonrpc": "2.0", "method": "Input.Down", "id": 1}');
+									break;
+								case "Back":	
+									RegVar_SendText($room->regvarId, '{"jsonrpc": "2.0", "method": "Input.Back", "id": 1}');
+									break;											
+								case "ShowOSD":	
+									RegVar_SendText($room->regvarId, '{"jsonrpc": "2.0", "method": "Input.ShowOSD", "id": 1}');
+									break;											
+								case "smallforward":	
+									RegVar_SendText($room->regvarId, '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": 1,"value":"smallforward" }, "id": 1}');
+									break;											
+								case "smallbackward":	
+									RegVar_SendText($room->regvarId, '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": 1,"value":"smallbackward" }, "id": 1}');
+									break;																					
+								default:
+									break;
+							}
+							break;						
 						default:
 							break;
 					}
@@ -345,14 +346,13 @@
 					if ($result) $room->setvalue($command, $function, $value);						
 					break;
 				
-				case IPSxbmc_CMD_ROOM:
+				case IPSXBMC_CMD_ROOM:
 
 					// xbmc initialisieren
 					$room = $this->GetRoom($roomName);
-					$xbmc = new PHPxbmc($room->IPAddr);
 					
 					switch ($function) {
-						case IPSxbmc_FNC_POWER:
+						case IPSXBMC_FNC_POWER:
 							
 							//Switch Room
 							if ($value == false) {
@@ -360,6 +360,8 @@
 							}
 							//
 							if( IPSxbmc_Custom_SetRoomPower($roomName, $value) == true) {
+								IPS_SetProperty($room->SocketSendID, 'Open', $value);
+								IPS_ApplyChanges($room->SocketSendID);
 								$this->LogInf('Power im Raum '.$roomName.' gesetzt auf: '.$value.'!');
 								$result = true;
 							}
@@ -377,7 +379,7 @@
 						$room->setvalue($command, $function, $value);
 					break;
 					
-				case IPSxbmc_CMD_SERVER:
+				case IPSXBMC_CMD_SERVER:
 					
 					switch ($function) {							
 						default:

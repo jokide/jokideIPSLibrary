@@ -114,34 +114,52 @@
 		$RoomInstanceId = CreateDummyInstance($GroupName, $CategoryIdData, 100+$RoomId);
 		$RoomIds[]      = $RoomInstanceId;
 
-		$PowerId        	= CreateVariable(IPSXBMC_VAR_ROOMPOWER,   0 /*Boolean*/, $RoomInstanceId,  10, '~Switch',              $id_ScriptSettings, IPSXBMC_VAL_POWER_DEFAULT, 'Power');
-		$VolumeId      		= CreateVariable(IPSXBMC_VAR_VOLUME,      1 /*Integer*/, $RoomInstanceId,  40, 'IPSxbmc_Volume',      $id_ScriptSettings, IPSXBMC_VAL_VOLUME_DEFAULT, 'Intensity');
-		$MutingId       	= CreateVariable(IPSXBMC_VAR_MUTE,        0 /*Boolean*/, $RoomInstanceId,  50, 'IPSxbmc_Mute',        $id_ScriptSettings, IPSXBMC_VAL_MUTE_DEFAULT, 'Speaker');
-		$TransportId    	= CreateVariable(IPSXBMC_VAR_TRANSPORT,   1 /*Integer*/, $RoomInstanceId,  60, 'IPSxbmc_Transport',   $id_ScriptSettings, IPSXBMC_VAL_TRANSPORT, 'ArrowRight');
-		$IPAdrr         	= CreateVariable(IPSXBMC_VAR_IPADDR,      3 /*String*/,  $RoomInstanceId,  100, '', 					null, 				'', '');
-		$PositionId  		= CreateVariable(IPSXBMC_VAR_POSITION,    1 /*Integer*/, $RoomInstanceId,  310 , 'IPSxbmc_Position',   $id_ScriptSettings, 0, 'Gauge');
-		$titleID        	= CreateVariable(IPSXBMC_VAR_TITLE,       3 /*String*/,  $RoomInstanceId,  100, '', 					null, 				'', '');
+		$PowerId        	= CreateVariable(IPSXBMC_VAR_ROOMPOWER,   	0 /*Boolean*/, $RoomInstanceId,  10, '~Switch',              $id_ScriptSettings, IPSXBMC_VAL_POWER_DEFAULT, 'Power');
+		$VolumeId      		= CreateVariable(IPSXBMC_VAR_VOLUME,      	1 /*Integer*/, $RoomInstanceId,  20, 'IPSxbmc_Volume',      $id_ScriptSettings, IPSXBMC_VAL_VOLUME_DEFAULT, 'Intensity');
+		$MutingId       	= CreateVariable(IPSXBMC_VAR_MUTE,        	0 /*Boolean*/, $RoomInstanceId,  30, 'IPSxbmc_Mute',        $id_ScriptSettings, IPSXBMC_VAL_MUTE_DEFAULT, 'Speaker');
+		$TransportId    	= CreateVariable(IPSXBMC_VAR_TRANSPORT,   	1 /*Integer*/, $RoomInstanceId,  40, 'IPSxbmc_Transport',   $id_ScriptSettings, IPSXBMC_VAL_TRANSPORT, 'ArrowRight');
+		$IPAdrr         	= CreateVariable(IPSXBMC_VAR_IPADDR,      	3 /*String*/,  $RoomInstanceId,  50, '', 					null, 				'', '');
+		$PositionId  		= CreateVariable(IPSXBMC_VAR_POSITION,    	1 /*Integer*/, $RoomInstanceId,  60 , 'IPSxbmc_Position',   $id_ScriptSettings, 0, 'Gauge');
+		$titleID        	= CreateVariable(IPSXBMC_VAR_TITLE,       	3 /*String*/,  $RoomInstanceId,  70, '', 					null, 				'', '');
+		$fileID        		= CreateVariable(IPSXBMC_VAR_FILE,       	3 /*String*/,  $RoomInstanceId,  80, '', 					null, 				'', '');
+		$seekID        		= CreateVariable(IPSXBMC_VAR_SEEK,       	3 /*String*/,  $RoomInstanceId,  90, '', 					null, 				'', '');
+		$statusID        	= CreateVariable(IPSXBMC_VAR_STATUS,       	3 /*String*/,  $RoomInstanceId,  100, '', 					null, 				'', '');
 
-		// Create Socket
-		$socketID = @IPS_GetInstanceIDByName("XBMC Socket ".$GroupName, 0);
-		if ($socketID === false)
+		$VarSocketSendID    = CreateVariable(IPSXBMC_VAR_SOCKETSEND,	3 /*String*/,  $RoomInstanceId,  110, '', 					null, 				'', '');
+
+		// Create Socket to send commands
+		$SocketSendID = @IPS_GetInstanceIDByName("IPSxbmc Socket ".$GroupName." Send", 0);
+		if ($SocketSendID === false)
 		{
-			$SocketID = IPS_CreateInstance("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
-			IPS_SetName($SocketID, "IPSxbmc Socket ".$GroupName);
+			$SocketSendID = IPS_CreateInstance("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
+			IPS_SetName($SocketSendID, "IPSxbmc Socket ".$GroupName." Send");
 		}		
-		CSCK_SetHost($SocketID, $GroupData[0]);
-		CSCK_SetPort($SocketID, 8080);
-		CSCK_SetOpen($SocketID, false);
-		IPS_ApplyChanges($SocketID);
+		CSCK_SetHost($SocketSendID, $GroupData[0]);
+		CSCK_SetPort($SocketSendID, 8080);
+		CSCK_SetOpen($SocketSendID, false);
+		IPS_ApplyChanges($SocketSendID);
 
+		// Create Socket to reveive commands
+		$SocketReceiveID = @IPS_GetInstanceIDByName("IPSxbmc Socket ".$GroupName." Receive", 0);
+		if ($SocketReceiveID === false)
+		{
+			$SocketReceiveID = IPS_CreateInstance("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
+			IPS_SetName($SocketReceiveID, "IPSxbmc Socket ".$GroupName." Receive");
+		}		
+		CSCK_SetHost($SocketReceiveID, $GroupData[0]);
+		CSCK_SetPort($SocketReceiveID, 9000);
+		CSCK_SetOpen($SocketReceiveID, false);
+		IPS_ApplyChanges($SocketReceiveID);		
+		
 		//Create Register Variable
-		$CommRegVarID	= CreateRegisterVariable(IPSXBMC_VAR_COMREGVAR, $RoomInstanceId, $id_ScriptSettings, $SocketID, $Position=0);
+		$CommRegVarID	= CreateRegisterVariable(IPSXBMC_VAR_COMREGVAR, $RoomInstanceId, $id_ScriptSettings, $SocketReceiveID, $Position=0);
 
 //		IPS_ConnectInstance($rvID, $socketID);
 		
 		
 		// Werte aus Config zuweisen
 		SetValue($IPAdrr, $GroupData[0]);
+		SetValue($VarSocketSendID, $SocketSendID);
 	}
 
 	SetValue($id_RoomIds, implode(',',$RoomIds));

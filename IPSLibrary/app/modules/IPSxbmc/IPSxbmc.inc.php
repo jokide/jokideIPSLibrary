@@ -45,7 +45,7 @@
 	 */
 	function IPSxbmc_SetRoomPower($roomName, $value) {
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_ROOM, $roomName, IPSxbmc_FNC_POWER, $value);
+		return $server->SendData(IPSXBMC_CMD_ROOM, $roomName, IPSXBMC_FNC_POWER, $value);
 	}
 	
 	/**
@@ -57,7 +57,7 @@
 	 */
 	function IPSxbmc_GetRoomPower($roomName) {
 		$server = IPSxbmc_GetServer();
-		return $server->GetData(IPSxbmc_CMD_ROOM, $roomName, IPSxbmc_FNC_POWER, null);
+		return $server->GetData(IPSXBMC_CMD_ROOM, $roomName, IPSXBMC_FNC_POWER, null);
 	}
 	
 	/**
@@ -80,72 +80,60 @@
 	
 	function IPSxbmc_GetAllRooms() {
 		$server = IPSxbmc_GetServer();
-		return $server->GetData(IPSxbmc_CMD_SERVER, null, IPSxbmc_FNC_ROOMS, null);
+		return $server->GetData(IPSXBMC_CMD_SERVER, null, IPSXBMC_FNC_ROOMS, null);
 	}	
 
 	function IPSxbmc_GetAllActiveRooms() {
 		$server = IPSxbmc_GetServer();
-		return $server->GetData(IPSxbmc_CMD_SERVER, null, IPSxbmc_FNC_ROOMSACTIVE, null);
+		return $server->GetData(IPSXBMC_CMD_SERVER, null, IPSXBMC_FNC_ROOMSACTIVE, null);
 	}	
 	
-	function IPSxbmc_PlayPause($roomName) {
+	function IPSxbmc_Play($roomName) {
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_PLAY, null);
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomName, IPSXBMC_FNC_PLAY, null);
 	}
 
 	function IPSxbmc_Pause($roomName) {
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_PAUSE, null);
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomName, IPSXBMC_FNC_PAUSE, null);
 	}	
 	
 	function IPSxbmc_Stop($roomName) {
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_STOP, null);
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomName, IPSXBMC_FNC_STOP, null);
 	}	
 	
 	function IPSxbmc_Next($roomName) {
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_NEXT, null);
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomName, IPSXBMC_FNC_NEXT, null);
 	}
 	function IPSxbmc_Previous($roomName) {
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_PREVIOUS, null);
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomName, IPSXBMC_FNC_PREVIOUS, null);
 	}	
 
 	function IPSxbmc_RampToVolumeMute($roomName, $value){
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_VOLUME_RMPMUTE, $value);
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomName, IPSXBMC_FNC_VOLUME_RMPMUTE, $value);
 	}	
 	
 	function IPSxbmc_RampToVolumeMuteSlow($roomName, $value){
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_VOLUME_RMPMUTESLOW, $value);
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomName, IPSXBMC_FNC_VOLUME_RMPMUTESLOW, $value);
 	}	
 	
 	function IPSxbmc_RampToVolume($roomName, $value){
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_VOLUME_RMP, $value);
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomName, IPSXBMC_FNC_VOLUME_RMP, $value);
 	}
 
-	function IPSxbmc_SetShuffle($roomName, $value){
+	function IPSxbmc_Input($roomName, $value){
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_SHUFFLE, $value);
-	}
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomName, IPSXBMC_FNC_INPUT, $value);
+	}	
+
+		
 	
-	function IPSxbmc_GetShuffle($roomName){
-		$server = IPSxbmc_GetServer();
-		return $server->GetData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_SHUFFLE, null);
-	}
-	
-	function IPSxbmc_SetRepeat($roomName, $value){
-		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_REPEAT, $value);
-	}
-	
-	function IPSxbmc_GetRepeat($roomName){
-		$server = IPSxbmc_GetServer();
-		return $server->GetData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_REPEAT, null);
-	}		
 	/**
 	 * Auswahl des Eingangs, der für einen bestimmten Raum verwendet werden soll
 	 *
@@ -156,7 +144,7 @@
 	 */
 	function IPSxbmc_SetInputSelect($instanceId, $roomId, $value) {
 		$server = IPSxbmc_GetServer($instanceId);
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomId, IPSxbmc_FNC_INPUTSELECT, $value);
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomId, IPSXBMC_FNC_INPUTSELECT, $value);
 	}
 
 	/**
@@ -168,7 +156,7 @@
 	 */
 	function IPSxbmc_GetInputSelect($instanceId, $roomId) {
 		$server = IPSxbmc_GetServer($instanceId);
-		return $server->GetData(IPSxbmc_CMD_AUDIO, $roomId, IPSxbmc_FNC_INPUTSELECT, null)+1;
+		return $server->GetData(IPSXBMC_CMD_PLAYER, $roomId, IPSXBMC_FNC_INPUTSELECT, null)+1;
 	}
 
 	/**
@@ -181,7 +169,7 @@
 	 */
 //	function IPSxbmc_SetInputGain($instanceId, $roomId, $value) {
 //		$server = IPSxbmc_GetServer($instanceId);
-//		return $server->SendData(IPSxbmc_TYP_SET, IPSxbmc_CMD_AUDIO, $roomId, IPSxbmc_FNC_INPUTGAIN, $value);
+//		return $server->SendData(IPSxbmc_TYP_SET, IPSXBMC_CMD_PLAYER, $roomId, IPSXBMC_FNC_INPUTGAIN, $value);
 //	}
 
 	/**
@@ -193,7 +181,7 @@
 	 */
 //	function IPSxbmc_GetInputGain($instanceId, $roomId) {
 //		$server = IPSxbmc_GetServer($instanceId);
-//		return $server->SendData(IPSxbmc_TYP_GET, IPSxbmc_CMD_AUDIO, $roomId, IPSxbmc_FNC_INPUTGAIN, null);
+//		return $server->SendData(IPSxbmc_TYP_GET, IPSXBMC_CMD_PLAYER, $roomId, IPSXBMC_FNC_INPUTGAIN, null);
 //	}
 
 	/**
@@ -206,7 +194,7 @@
 	 */
 	function IPSxbmc_SetVolume($roomName, $value) {
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_VOLUME, $value);
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomName, IPSXBMC_FNC_VOLUME, $value);
 	}
 	/**
 	 * Laustärke erhöhen
@@ -218,7 +206,7 @@
 	 */
 	function IPSxbmc_IncVolume($roomName, $value) {
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_VOLUME_INC, $value);
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomName, IPSXBMC_FNC_VOLUME_INC, $value);
 	}
 	/**
 	 * Laustärke verringern
@@ -230,7 +218,7 @@
 	 */
 	function IPSxbmc_DecVolume($roomName, $value) {
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_VOLUME_DEC, $value);
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomName, IPSXBMC_FNC_VOLUME_DEC, $value);
 	}
 		
 	/**
@@ -242,7 +230,7 @@
 	 */
 	function IPSxbmc_GetVolume($instanceId, $roomId) {
 		$server = IPSxbmc_GetServer($instanceId);
-		return $server->GetData(IPSxbmc_CMD_AUDIO, $roomId, IPSxbmc_FNC_VOLUME, null);
+		return $server->GetData(IPSXBMC_CMD_PLAYER, $roomId, IPSXBMC_FNC_VOLUME, null);
 	}
 
 	/**
@@ -255,7 +243,7 @@
 	 */
 	function IPSxbmc_SetMute($roomName, $value) {
 		$server = IPSxbmc_GetServer();
-		return $server->SendData(IPSxbmc_CMD_AUDIO, $roomName, IPSxbmc_FNC_MUTE, $value);
+		return $server->SendData(IPSXBMC_CMD_PLAYER, $roomName, IPSXBMC_FNC_MUTE, $value);
 	}
 
 	/**
@@ -267,7 +255,7 @@
 	 */
 	function IPSxbmc_GetMute($roomName) {
 		$server = IPSxbmc_GetServer($instanceId);
-		return $server->GetData(IPSxbmc_CMD_AUDIO, $roomId, IPSxbmc_FNC_MUTE, null);
+		return $server->GetData(IPSXBMC_CMD_PLAYER, $roomId, IPSXBMC_FNC_MUTE, null);
 	}
 	
 	/**
@@ -279,7 +267,7 @@
 	 */
 	function IPSxbmc_SwitchMute($roomName) {
 		$server = IPSxbmc_GetServer($instanceId);
-		return $server->GetData(IPSxbmc_CMD_AUDIO, $roomId, IPSxbmc_FNC_MUTE, null);
+		return $server->GetData(IPSXBMC_CMD_PLAYER, $roomId, IPSXBMC_FNC_MUTE, null);
 	}
 	
 	/**
