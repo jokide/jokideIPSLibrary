@@ -31,7 +31,7 @@
     *
     * @author joki
     * @version
-    * Version 1.0.1, 08.09.2014<br/>
+    * Version 1.0.3, 11.09.2014<br/>
     */
 	include_once 'IPSSonos_Server.class.php';
 	IPSUtils_Include ("IPSSonos.inc.php", 				"IPSLibrary::app::modules::IPSSonos");
@@ -222,7 +222,7 @@
 				$PreviousPlayerType = $room->getvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_VAR_PLAYERDETAILS);
 				if ($PlayerType != $PreviousPlayerType) {
 					IPSUtils_Include ("IPSSonos_Custom.inc.php",        "IPSLibrary::config::modules::IPSSonos");	
-					IPSSonos_Custom_PlayerType($roomName, $PlayerType);	
+					@IPSSonos_Custom_PlayerType($roomName, $PlayerType);	
 				}
 				$room->setvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_VAR_PLAYERDETAILS, $PlayerType);
 				
