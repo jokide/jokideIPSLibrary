@@ -31,7 +31,7 @@
     *
     * @author joki
     * @version
-    * Version 1.0.3, 11.09.2014<br/>
+    * Version 1.0.4, 12.09.2014<br/>
     */
 	include_once 'IPSSonos_Server.class.php';
 	IPSUtils_Include ("IPSSonos.inc.php", 				"IPSLibrary::app::modules::IPSSonos");
@@ -151,7 +151,7 @@
 				
 				// Identify type of player
 				$PlayerType = "OTHER";
-				
+
 //				if ($Status === 3) {
 //				
 //					$PlayerType = "STOP";
@@ -221,8 +221,10 @@
 				// Check if player type has changed an execute callback ------------------------------------------------------------------------------------------------------		
 				$PreviousPlayerType = $room->getvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_VAR_PLAYERDETAILS);
 				if ($PlayerType != $PreviousPlayerType) {
-					IPSUtils_Include ("IPSSonos_Custom.inc.php",        "IPSLibrary::config::modules::IPSSonos");	
-					@IPSSonos_Custom_PlayerType($roomName, $PlayerType);	
+					IPSUtils_Include ("IPSSonos_Custom.inc.php",        "IPSLibrary::config::modules::IPSSonos");
+					if (function_exists("IPSSonos_Custom_PlayerType")) {
+						IPSSonos_Custom_PlayerType($roomName, $PlayerType);
+					}
 				}
 				$room->setvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_VAR_PLAYERDETAILS, $PlayerType);
 				
