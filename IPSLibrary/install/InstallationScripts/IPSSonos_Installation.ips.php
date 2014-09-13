@@ -137,6 +137,7 @@
 		$RepeatId       	= CreateVariable(IPSSONOS_VAR_REPEAT,			0 /*Boolean*/, $RoomInstanceId,  100, 'IPSSonos_Repeat',     	$id_ScriptSettings, false, '');
 		$RemoteControlId  	= CreateVariable(IPSSONOS_VAR_REMOTE,   		3 /*String*/,  $RoomInstanceId,  110 , '~HTMLBox', 				null, '');
 //		$CoverURIId  		= CreateVariable(IPSSONOS_VAR_COVERURI,   		3 /*String*/,  $RoomInstanceId,  120 ,	'', 						null, 				'', '');
+
 		$PlayerDetails  	= CreateVariable(IPSSONOS_VAR_PLAYERDETAILS,   	3 /*String*/,  $RoomInstanceId,  120 ,	'', 					null, 				'', '');
 
 		
