@@ -61,7 +61,7 @@
 			
 				switch($variableValue) {
 					case IPSSONOS_TRA_PREVIOUS:
-						IPSSonos_PREVIOUS($roomName);				
+						IPSSonos_Previous($roomName);				
 						break;			
 					case IPSSONOS_TRA_PLAY:
 						IPSSonos_Play($roomName);				
@@ -73,7 +73,7 @@
 						IPSSonos_Stop($roomName);						
 						break;
 					case IPSSONOS_TRA_NEXT:
-						IPSSonos_NEXT($roomName);				
+						IPSSonos_Next($roomName);				
 						break;					
 					default:
 						break;
@@ -97,6 +97,9 @@
 			case IPSSONOS_VAR_QUERYTIME:
 				IPSSonos_SetQueryTime($variableValue);
 				break;					
+			case IPSSONOS_VAR_POSITIONPERCENT:
+				IPSSonos_SeekPosition($roomName, $variableValue);
+				break;				
 			default:
 				break;
 		}

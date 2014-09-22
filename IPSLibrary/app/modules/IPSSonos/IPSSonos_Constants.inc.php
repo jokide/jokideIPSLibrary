@@ -24,7 +24,7 @@
 	 * @file          IPSSonos_Constants.inc.php
 	 * @author        joki
 	 * @version
-	 * Version 1.0.2, 09.09.2014<br/>
+	 * Version 1.0.5, 21.09.2014<br/>
 	 *
 	 */
 
@@ -32,7 +32,7 @@
 	define ('IPSSONOS_CMD_AUDIO',						'AUD');
 	define ('IPSSONOS_CMD_ROOM',						'ROO');
 	define ('IPSSONOS_CMD_SERVER',						'SRV');	
-
+	define ('IPSSONOS_CMD_VARIABLE',					'VAR');	
 
 	// Kommunikations Actions
 	define ('IPSSONOS_FNC_POWER',						'PWR');
@@ -61,7 +61,9 @@
 	define ('IPSSONOS_FNC_QUERYDATA',					'QUERYDATA');			
 	define ('IPSSONOS_FNC_ALLROOMSOFF',					'ALLROOMSOFF');	
 	define ('IPSSONOS_FNC_SETQUERY',					'SETQUERY');	
-	define ('IPSSONOS_FNC_SETQUERYTIME',				'SETQUERYTIME');		
+	define ('IPSSONOS_FNC_SETQUERYTIME',				'SETQUERYTIME');	
+	define ('IPSSONOS_FNC_SEEKPOSITION',				'SEEKPOSITION');	
+	
 	
 	//Define Transport
 	define ('IPSSONOS_TRA_PREVIOUS',					'0');	
@@ -101,16 +103,19 @@
 	define ('IPSSONOS_VAR_TRANSPORT',					'TRANSPORT');
 	define ('IPSSONOS_VAR_SHUFFLE',						'SHUFFLE');
 	define ('IPSSONOS_VAR_REPEAT',						'REPEAT');	
-//	define ('IPSSONOS_VAR_COVERURI',					'COVERURI');	
 	define ('IPSSONOS_VAR_TITLE',						'TITLE');	
 	define ('IPSSONOS_VAR_ALBUM',						'ALBUM');	
 	define ('IPSSONOS_VAR_ARTIST',						'ARTIST');		
 	define ('IPSSONOS_VAR_ALBUMARTIST',					'ALBUMARTIST');	
 	define ('IPSSONOS_VAR_POSITION',					'POSITION');	
+	define ('IPSSONOS_VAR_POSITIONPERCENT',				'POSITIONP');		
 	define ('IPSSONOS_VAR_DURATION',					'DURATION');	
 	define ('IPSSONOS_VAR_QUERY',						'QUERY');	
 	define ('IPSSONOS_VAR_QUERYTIME',					'QUERYTIME');	
-	define ('IPSSONOS_VAR_PLAYERDETAILS',				'PLAYERDETAILS');	
+	define ('IPSSONOS_VAR_COVERURI',					'COVERURI');			
+	define ('IPSSONOS_VAR_PLAYERDETAILS',				'PLAYERDETAILS');
+//	define ('IPSSONOS_VAR_GUISHOWDETAILS',				'GUISHOWDETAILS');	
+	define ('IPSSONOS_VAR_SERVERDETAILS',				'SERVERDETAILS');	
 	
 	define ('IPSSONOS_EVT_QUERY',						'QUERYSONOS');	
 	define ('IPSSONOS_EVT_POWERONDELAY',				'POWERONDELAY');

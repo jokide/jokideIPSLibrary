@@ -31,7 +31,7 @@
     *
     * @author joki
     * @version
-    * Version 1.0.4, 12.09.2014<br/>
+    * Version 1.0.5, 21.09.2014<br/>
     */
 	include_once 'IPSSonos_Server.class.php';
 	IPSUtils_Include ("IPSSonos.inc.php", 				"IPSLibrary::app::modules::IPSSonos");
@@ -109,7 +109,10 @@
 				$AlbumArtURI	=	null;
 				$Artist			=	null;
 				$Album			=	null;	
-				$AlbumTrackNum	=	null;	
+				$AlbumTrackNum	=	null;
+				$Position		=	null;
+				$Duration		= 	null;	
+				$Percent_Played = 	null;
 						
 				// Sonos initialisieren
 				$room = $server->GetRoom($roomName);
@@ -152,12 +155,6 @@
 				// Identify type of player
 				$PlayerType = "OTHER";
 
-//				if ($Status === 3) {
-//				
-//					$PlayerType = "STOP";
-//				
-//				}
-//				elseif (($PosInfo["URI"] != "") and 
 				if (($PosInfo["URI"] != "") and 
 						(substr($PosInfo["URI"], 0, 17) != "x-rincon-mp3radio") and 
 						(substr($PosInfo["URI"], 0, 6)  != "mms://")) {
@@ -218,7 +215,7 @@
 					}
 				else { $PlayerType = "OTHER"; } ;
 				
-				// Check if player type has changed an execute callback ------------------------------------------------------------------------------------------------------		
+				// Check if player type has changed and if yes, execute callback ------------------------------------------------------------------------------------------------------		
 				$PreviousPlayerType = $room->getvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_VAR_PLAYERDETAILS);
 				if ($PlayerType != $PreviousPlayerType) {
 					IPSUtils_Include ("IPSSonos_Custom.inc.php",        "IPSLibrary::config::modules::IPSSonos");
@@ -226,7 +223,19 @@
 						IPSSonos_Custom_PlayerType($roomName, $PlayerType);
 					}
 				}
-				$room->setvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_VAR_PLAYERDETAILS, $PlayerType);
+				$room->setvalue(IPSSONOS_CMD_VARIABLE, IPSSONOS_VAR_PLAYERDETAILS, $PlayerType);
+				
+				if ($server->ConfPlayerDetails == "High")  {
+					$CoverArtURL = "<img alt=\"\" src=\"".$AlbumArtURI."\" />";//  "<p><a href=\"".$AlbumArtURI."\"><img alt=\"src=\"".$AlbumArtURI."\" /></a></p>";
+					$room->setvalue(IPSSONOS_CMD_VARIABLE, IPSSONOS_VAR_COVERURI, $CoverArtURL);
+					$room->setvalue(IPSSONOS_CMD_VARIABLE, IPSSONOS_VAR_TITLE, $Title);
+					$room->setvalue(IPSSONOS_CMD_VARIABLE, IPSSONOS_VAR_ALBUM, $Album);
+					$room->setvalue(IPSSONOS_CMD_VARIABLE, IPSSONOS_VAR_ARTIST, $Artist);
+	//				$room->setvalue(IPSSONOS_CMD_VARIABLE, IPSSONOS_VAR_ALBUMARTIST, $PlayerType);
+					$room->setvalue(IPSSONOS_CMD_VARIABLE, IPSSONOS_VAR_POSITION, $Position);
+					$room->setvalue(IPSSONOS_CMD_VARIABLE, IPSSONOS_VAR_DURATION, $Duration);
+					$room->setvalue(IPSSONOS_CMD_VARIABLE, IPSSONOS_VAR_POSITIONPERCENT, $Percent_Played);
+				}
 				
 				// Update remote ------------------------------------------------------------------------------------------------------						
 				$HTMLRemote = 				"<table border=\"0\" cellpadding=\"1\" cellspacing=\"1\" style=\"width: 200;\">";
@@ -317,18 +326,6 @@
 			}
 		}
 	}
-	function time_to_sec($time) {
-		$hours = substr($time, 0, -6);
-		$minutes = substr($time, -5, 2);
-		$seconds = substr($time, -2);
-		return $hours * 3600 + $minutes * 60 + $seconds;
-	}
-
-	function sec_to_time($seconds) {
-		$hours = floor($seconds / 3600);
-		$minutes = floor($seconds % 3600 / 60);
-		$seconds = $seconds % 60;
-		return sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
-	}		
+	
 	/** @}*/
 ?>
