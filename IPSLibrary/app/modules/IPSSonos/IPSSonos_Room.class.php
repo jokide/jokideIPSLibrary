@@ -31,7 +31,7 @@
     *
 	* @author        joki
 	* @version
-	* Version 1.0.2, 11.09.2014<br/>
+	* Version 1.0.5, 21.09.2014<br/>
     */
 	IPSUtils_Include ("IPSSonos_Constants.inc.php",       "IPSLibrary::app::modules::IPSSonos");
 	IPSUtils_Include ("IPSSonos_Configuration.inc.php",   "IPSLibrary::config::modules::IPSSonos");
@@ -79,6 +79,7 @@
 			IPSSONOS_FNC_PLAYRDNAME			=> IPSSONOS_VAR_RADIOSTATION,				
 			IPSSONOS_FNC_SHUFFLE			=> IPSSONOS_VAR_SHUFFLE,
 			IPSSONOS_FNC_REPEAT				=> IPSSONOS_VAR_REPEAT,
+			IPSSONOS_FNC_SEEKPOSITION		=> IPSSONOS_VAR_POSITIONPERCENT,			
 			IPSSONOS_VAR_PLAYERDETAILS		=> IPSSONOS_VAR_PLAYERDETAILS,
 			);
 			
@@ -101,10 +102,13 @@
 		         break;
 				case IPSSONOS_CMD_AUDIO:
 		      	$variableName = $this->functionMapping[$function];
-		         break;
+		         break; 
 				case IPSSONOS_CMD_SERVER:
 		      	$variableName = $function;
-		         break;				 
+		         break;	
+				case IPSSONOS_CMD_VARIABLE:
+		      	$variableName = $function;
+		         break;						 
             default:
                throw new Exception('Unknown Command "'.$command.'", VariableName could NOT be found !!!');
 		   }

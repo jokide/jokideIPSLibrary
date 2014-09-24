@@ -274,22 +274,22 @@
 	 *  @param [in] $roomName Name of room as character
 	 *  @return Result as boolean
 	 */
-	function IPSSonos_GetMute($roomName) {
-		$server = IPSSonos_GetServer($instanceId);
-		return $server->GetData(IPSSONOS_CMD_AUDIO, $roomId, IPSSONOS_FNC_MUTE, null);
-	}
+//	function IPSSonos_GetMute($roomName) {
+//		$server = IPSSonos_GetServer($instanceId);
+//		return $server->GetData(IPSSONOS_CMD_AUDIO, $roomId, IPSSONOS_FNC_MUTE, null);
+//	}
 	
 	/**
-	 *  @brief Switch between the mute status
+	 *  @brief Seek
 	 *  
 	 *  @param [in] $roomName Name of room as character
 	 *  @return Result as boolean
 	 */
-	function IPSSonos_SwitchMute($roomName) {
-		$server = IPSSonos_GetServer($instanceId);
-		return $server->GetData(IPSSONOS_CMD_AUDIO, $roomId, IPSSONOS_FNC_MUTE, null);
+	function IPSSonos_SeekPosition($roomName, $value) {
+		$server = IPSSonos_GetServer();
+		return $server->SendData(IPSSONOS_CMD_AUDIO, $roomName, IPSSONOS_FNC_SEEKPOSITION, $value);
 	}
-
+	
 	/**
 	 *  @brief Starts playing of a specified Sonos playlist
 	 *  

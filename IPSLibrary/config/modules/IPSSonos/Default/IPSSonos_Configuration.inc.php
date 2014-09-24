@@ -16,6 +16,7 @@
 	function IPSSonos_GetServerConfiguration() {
 		return array(
 			IPSSONOS_VAR_IPADDR		=>	'192.168.20.103',	// IP Adresse eines Players (keine Bridge!), dass möglichst immer an ist. Steuert zentrale Funktionen wie z.B. Synchronisation der Playlists
+			IPSSONOS_VAR_PLAYERDETAILS 	=> "Standard",		// Change to "High" if detailed information on the players are needed (creates variavles for i.e. song, interpret, album, ... )
 			);
 	}
 

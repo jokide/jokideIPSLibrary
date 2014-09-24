@@ -42,7 +42,7 @@
     *
 	* @author        joki
 	* @version
-	* Version 1.0.2, 11.09.2014<br/>
+	* Version 1.0.5, 21.09.2014<br/>
     */
 	class IPSSonos_Server {
 
@@ -63,7 +63,13 @@
 		 * Debugging of IPSSonos Server Enabled/Disabled
 		 */
 		private $debugEnabled;
-
+		
+		/**
+		 * @private
+		 * Debugging of IPSSonos Server Enabled/Disabled
+		 */		
+		public $ConfPlayerDetails;
+		
 		/** 
 		 * @public
 		 *
@@ -72,9 +78,10 @@
 		 * @param integer $instanceId - ID des IPSSonos Server.
 		 */
 		public function __construct($instanceId) {
-			$this->instanceId   = $instanceId;
-			$this->IPAddr		= GetValue(IPS_GetObjectIDByIdent(IPSSONOS_VAR_IPADDR, $this->instanceId));
-			$this->retryCount  = 0;
+			$this->instanceId   		= $instanceId;
+			$this->IPAddr				= GetValue(IPS_GetObjectIDByIdent(IPSSONOS_VAR_IPADDR, $this->instanceId));
+//			$this->retryCount  = 0;
+			$this->ConfPlayerDetails	= GetValue(IPS_GetObjectIDByIdent(IPSSONOS_VAR_SERVERDETAILS, $this->instanceId));
 		}
 
 		/**
@@ -350,7 +357,15 @@
 								$this->LogDbg('Mute im Raum '.$roomName.' gesetzt auf: '.$value);
 								$function 	= IPSSONOS_FNC_MUTE;
 								$result = true;
-							break;								
+							break;	
+						case IPSSONOS_FNC_SEEKPOSITION:
+								$PositionPercent = $room->GetValue(IPSSONOS_CMD_VARIABLE, IPSSONOS_VAR_DURATION);
+								$SongDuration 	= time_to_sec($PositionPercent);
+								$PositionSeek 	= sec_to_time($SongDuration * $value / 100);
+								$sonos->Seek("REL_TIME",$PositionSeek);
+								$this->LogDbg('Seek im Raum '.$roomName.' gesetzt auf: '.$PositionSeek);
+								$result = true;
+							break;									
 						case IPSSONOS_FNC_PLAYPLNAME:
 								if ($this->SetQueuePlaylistByName($room, $sonos, $value)== true) {
 									$sonos->Play();
@@ -738,6 +753,18 @@
 		}	
 	}
 	
+	function time_to_sec($time) {
+		$hours = substr($time, 0, -6);
+		$minutes = substr($time, -5, 2);
+		$seconds = substr($time, -2);
+		return $hours * 3600 + $minutes * 60 + $seconds;
+	}
 
+	function sec_to_time($seconds) {
+		$hours = floor($seconds / 3600);
+		$minutes = floor($seconds % 3600 / 60);
+		$seconds = $seconds % 60;
+		return sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
+	}	
 	/** @}*/
 ?>
