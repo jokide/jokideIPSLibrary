@@ -31,7 +31,7 @@
     *
     * @author joki
     * @version
-    * Version 1.0.5, 21.09.2014<br/>
+    * Version 1.0.6, 26.09.2014<br/>
     */
 	include_once 'IPSSonos_Server.class.php';
 	IPSUtils_Include ("IPSSonos.inc.php", 				"IPSLibrary::app::modules::IPSSonos");
@@ -105,15 +105,15 @@
 				}
 				
 				//Sonos is reachable, update variables of webfront ----------------------------------------------------------------------			
-				$Title			=	null;
-				$AlbumArtURI	=	null;
-				$Artist			=	null;
-				$Album			=	null;	
-				$AlbumTrackNum	=	null;
-				$Position		=	null;
-				$Duration		= 	null;	
-				$Percent_Played = 	null;
-						
+				$Title			=	"";
+				$AlbumArtURI	=	"";
+				$Artist			=	"";
+				$Album			=	"";	
+				$Position		=	"";
+				$Duration		= 	"";	
+				$Percent_Played = 	0;
+				
+					
 				// Sonos initialisieren
 				$room = $server->GetRoom($roomName);
 				$sonos = new PHPSonos($room->IPAddr);
