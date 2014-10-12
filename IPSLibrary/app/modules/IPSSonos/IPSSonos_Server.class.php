@@ -42,7 +42,7 @@
     *
 	* @author        joki
 	* @version
-	* Version 1.0.5, 21.09.2014<br/>
+	* Version 1.1.0, 12.10.2014<br/>
     */
 	class IPSSonos_Server {
 
@@ -461,7 +461,7 @@
 								$sonos->SetPlayMode($mode);
 								$this->LogDbg('Mode im Raum '.$roomName.' gesetzt auf: '.$mode);
 								$result = true;
-							break;								
+							break;							
 						default:
 							break;
 					}
@@ -543,7 +543,41 @@
 							break;								
 						case IPSSONOS_FNC_SETQUERYTIME:
 							$result = $this -> QuerySetTime($value);
-							break;									
+							break;
+						case IPSSONOS_FNC_MSGTTSRS:
+							$params =  array (
+									"Rooms"					=>  $roomName,              
+									"Volume_Ramp"     		=>  'slow',
+									"Text"					=>  $value,
+									"Type"					=>  'TTS_Simple', 
+									"TTS_Simple_Language"	=>  'de',          						
+							);
+							$result = $this -> PlayMessage($params);
+							break;
+						case IPSSONOS_FNC_MSGTTSAS:
+							$activeRooms = IPSSonos_GetAllActiveRooms();
+							$l_first_loop = true;
+							foreach ($activeRooms as $roomName) {
+								if ($l_first_loop == true)  {
+									$rooms = $roomName;
+									$l_first_loop = false;
+								}
+								else {
+									$rooms = $rooms.",".$roomName;								
+								}
+							}
+							$params =  array (
+									"Rooms"					=>  $rooms,              
+									"Volume_Ramp"     		=>  'slow',
+									"Text"					=>  $value,
+									"Type"					=>  'TTS_Simple', 
+									"TTS_Simple_Language"	=>  'de',          						
+							);
+							$result = $this -> PlayMessage($params);
+							break;	
+						case IPSSONOS_FNC_MSGGEN:
+							$result = $this -> PlayMessage($value);
+							break;								
 						default:
 							break;
 					}						
@@ -747,10 +781,174 @@
 					$this->LogInf('Abstand zwischen den Abfragen der Sonos-Geräte gesetzt auf: '.$duration);
 					$result = true;
 				}
-				if (!$result) $this->LogErr('Fehler beim setzen des zuklischen Events für Query');
+				if (!$result) $this->LogErr('Fehler beim setzen des zyklischen Events für Query');
 			}
 			return $result;	
-		}	
+		}
+		
+		private function PlayMessage($params) {
+			
+			// Initialize ---------------------------------------------------------------
+//			set_time_limit(100);
+			
+			$MessageConfig = IPSSonos_GetMessageConfiguration();
+			$l_volume_ramp	= @$params["Volume_Ramp"]; 	if ($l_volume_ramp!='fast') $l_volume_ramp='slow';
+			$l_sound_repeat = @$params["Sound_Repeat"];	if ($l_sound_repeat=='') $l_sound_repeat = 1;
+			$l_sound_delay =  @$params["Sound_Delay"];	if ($l_sound_delay=='')  $l_sound_delay = 0;
+
+			$rooms 			= explode(',',$params["Rooms"]);
+			$count_rooms 	= count($rooms);
+			$volume_max 	= 0;
+
+			// Save volume settings of players ------------------------------------------
+			for ($i = 0; $i < $count_rooms; $i++) {
+				$room 					= $this->GetRoom($rooms[$i]);
+				$sonos[$i] 				= new PHPSonos($room->IPAddr);
+				$volume_start[$i] 		= $sonos[$i]->GetVolume();
+				$volume_current[$i]		= $volume_start[$i];
+
+				if ($volume_max < $volume_start[$i]) $volume_max = $volume_start[$i];
+			}
+
+			// Ramp-Down volume ---------------------------------------------------------
+			if ($l_volume_ramp!='fast') {
+				$volume = $volume_max;
+				while ($volume>=1)
+				{
+				   for ($i = 0; $i < $count_rooms; $i++) {
+						if($volume_current[$i] > 0) {
+						   $volume_current[$i] = $volume_current[$i] - 1;
+							$sonos[$i]->SetVolume($volume_current[$i]);
+						}
+					}
+				   $volume = $volume - 1;
+				   IPS_Sleep(75);
+				}
+			} else {
+			   $ramp_type = "AUTOPLAY_RAMP_TYPE";
+				for ($i = 0; $i < $count_rooms; $i++) {
+					$sonos[$i]->RampToVolume($ramp_type, 0);
+				}
+			}
+			
+		   // Save status of players ---------------------------------------------------
+			for ($i = 0; $i < $count_rooms; $i++) {
+				$oldpi[$i] = $sonos[$i]->GetPositionInfo();
+				$oldmi[$i] = $sonos[$i]->GetMediaInfo();
+				$radio[$i] = (strpos($oldmi[$i]['CurrentURI'],"x-sonosapi-stream:")>0)===false;
+				$oldti[$i] = $sonos[$i]->GetTransportInfo();
+			}
+
+			// Play Sound ---------------------------------------------------------------
+		   if (@$params["Sound"]!='') {
+		   
+				// Set Volume for playing sound
+				for ($i = 0; $i < $count_rooms; $i++) {
+					$l_volume = $volume_start[$i] + @$params["Sound_Volume_Offset"];
+					$sonos[$i]->SetVolume($l_volume);
+					$l_sound = $params["Sound"];
+					$l_song = "x-file-cifs:".$MessageConfig[IPSSONOS_VAR_SMBPATH].$MessageConfig[IPSSONOS_VAR_SOUNDS][$l_sound];
+					$sonos[$i]->SetAVTransportURI($l_song);
+				}
+				
+				// Start loop
+				for ($h = 0; $h < $l_sound_repeat; $h++) {
+					for ($i = 0; $i < $count_rooms; $i++) {
+						$sonos[$i]->Play();
+					}
+					//Wait till first player ended with playing text
+					while ($sonos[0]->GetTransportInfo()==1)
+					{
+					   IPS_Sleep(100);
+					}
+					// Wait specified time, but not in the last loop.
+					if ($h < ($l_sound_repeat - 1)) IPS_Sleep((int) $l_sound_delay);
+			  }
+			}
+
+		   // Play Text ----------------------------------------------------------------
+		   if (@$params["Text"]!='') {
+				switch ($params["Type"]) {
+					case "TTS_Simple":
+							$filename 	= "IPSSonos_Speech.mp3";
+							$file		= $MessageConfig[IPSSONOS_VAR_LPATH].$filename;
+							$text_utf8 	= urlencode(utf8_encode($params["Text"]));
+							$mp3 		= @file_get_contents('http://translate.google.com/translate_tts?tl='.$params["TTS_Simple_Language"].'&ie=UTF-8&q='.$text_utf8);
+							if((strpos($http_response_header[0], "200") != false)) {
+									file_put_contents($file, $mp3);
+							}
+							break;
+					case "TTS":
+							$filename 	= "IPSSonos_Speech.wav";
+							$file 		= $MessageConfig[IPSSONOS_VAR_LPATH].$filename;
+							TTS_GenerateFile( (int) $MessageConfig[IPSSONOS_VAR_TTSID] , $params["Text"], $file, 39);
+							IPS_Sleep(500);
+						break;
+					default:
+						break;
+				}
+				
+				for ($i = 0; $i < $count_rooms; $i++) {
+					$sonos[$i]->SetVolume($volume_start[$i]);
+					$sonos[$i]->SetAVTransportURI("x-file-cifs:".$MessageConfig[IPSSONOS_VAR_SMBPATH].$filename);
+					$sonos[$i]->Play();
+				}
+				
+				//Wait till first player ended with playing text
+				IPS_Sleep(500);
+				while ($sonos[0]->GetTransportInfo()==1)
+				{
+					IPS_Sleep(200); 
+				}
+			}
+			
+			//Reset players to initial state and start playing with volume 0
+			for ($i = 0; $i < $count_rooms; $i++) {
+				if ($radio[$i])
+				{
+					$sonos[$i]->SetRadio($oldmi[$i]['CurrentURI']);
+				}
+				else
+				{
+					$sonos[$i]->SetAVTransportURI($oldmi[$i]['CurrentURI'],$oldmi[$i]['CurrentURIMetaData']);
+				}
+
+				try
+				{
+					// Seek TRack_Nr
+				   $sonos[$i]->Seek("TRACK_NR",$oldpi[$i]['Track']);
+				   // Seek REl_time
+				   $sonos[$i]->Seek("REL_TIME",$oldpi[$i]['RelTime']);
+				}
+				catch (Exception $e)
+				{
+
+				}
+				$sonos[$i]->SetVolume(0);
+				if ($oldti[$i]==1) $sonos[$i]->Play();
+			}
+
+			//Ramp-Up volume to initial level -------------------------------------------
+		   if ($l_volume_ramp!='fast') {
+				$volume = 0;
+				IPS_Sleep(1000);
+				while ($volume < $volume_max) {
+				   for ($i = 0; $i < $count_rooms; $i++) {
+						 if($volume_current[$i] < $volume_start[$i]) {
+						$volume_current[$i] = $volume_current[$i] +1;
+							$sonos[$i]->SetVolume($volume_current[$i]);
+						 }
+					}
+				   $volume = $volume + 1;
+				   IPS_Sleep(100);
+				}
+			} else {
+			   $ramp_type = "AUTOPLAY_RAMP_TYPE";
+				for ($i = 0; $i < $count_rooms; $i++) {
+					$sonos[$i]->RampToVolume($ramp_type, $volume_start[$i]);
+				}
+			}
+		}		
 	}
 	
 	function time_to_sec($time) {
