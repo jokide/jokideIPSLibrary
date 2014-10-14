@@ -42,12 +42,6 @@
 			IPSSONOS_VAR_LPATH		=> 	'D:\\IPS-Config\\Sounds\\',				// Mandatory: Local folder to store wav and mp3 files 
 			IPSSONOS_VAR_SMBPATH	=> 	'//192.168.2.3/IPS-Config/Sounds/',		// Mandatory: SMB share of the local path specified above
 			IPSSONOS_VAR_TTSID		=> 	'37725',								// Optional:  ID of TTS (Text To Speech) instance
-			
-			IPSSONOS_VAR_SOUNDS 	=> array (									// Optional:  List of wav/mp3 files stored in the local folder
-				"ringin"			=> "ringin.wav",							
-				"notify"			=> "notify.wav",
-				"chimes"			=> "chimes.wav",
-				"bell"				=> "ding.wav")
 		);
 	}
 	

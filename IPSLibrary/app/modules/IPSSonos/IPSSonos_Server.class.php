@@ -816,8 +816,8 @@
 				while ($volume>=1)
 				{
 				   for ($i = 0; $i < $count_rooms; $i++) {
-						if($volume_current[$i] > 0) {
-						   $volume_current[$i] = $volume_current[$i] - 1;
+						if($volume_current[$i] > 1) {
+						   $volume_current[$i] = $volume_current[$i] - 2;
 							$sonos[$i]->SetVolume($volume_current[$i]);
 						}
 					}
@@ -846,8 +846,7 @@
 				for ($i = 0; $i < $count_rooms; $i++) {
 					$l_volume = $volume_start[$i] + @$params["Sound_Volume_Offset"];
 					$sonos[$i]->SetVolume($l_volume);
-					$l_sound = $params["Sound"];
-					$l_song = "x-file-cifs:".$MessageConfig[IPSSONOS_VAR_SMBPATH].$MessageConfig[IPSSONOS_VAR_SOUNDS][$l_sound];
+					$l_song = "x-file-cifs:".$MessageConfig[IPSSONOS_VAR_SMBPATH].$params["Sound"];
 					$sonos[$i]->SetAVTransportURI($l_song);
 				}
 				
@@ -940,7 +939,7 @@
 						 }
 					}
 				   $volume = $volume + 1;
-				   IPS_Sleep(100);
+				   IPS_Sleep(50);
 				}
 			} else {
 			   $ramp_type = "AUTOPLAY_RAMP_TYPE";
