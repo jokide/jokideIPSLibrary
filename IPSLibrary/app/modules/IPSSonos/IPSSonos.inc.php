@@ -25,7 +25,7 @@
 	 * @file          IPSSonos.inc.php
 	 * @author        joki
 	 * @version
-	 * Version 1.0.0, 01.09.2014<br/>
+	 * Version 1.1.0, 12.10.2014<br/>
 	 *
 	 * This include has all functions to control the IPSSonos application. The individual functions can
 	 * also be used in scripts outside the IPSLibrary allowing easy access of the SONOS devices.
@@ -251,10 +251,10 @@
 	 *  @param [in] $value Parameter_Description
 	 *  @return Result as boolean
 	 */
-//	function IPSSonos_GetVolume($instanceId, $roomId) {
-//		$server = IPSSonos_GetServer($instanceId);
-//		return $server->GetData(IPSSONOS_CMD_AUDIO, $roomId, IPSSONOS_FNC_VOLUME, null);
-//	}
+	function IPSSonos_GetVolume($roomName) {
+		$server = IPSSonos_GetServer();
+		return $server->GetData(IPSSONOS_CMD_AUDIO, $roomName, IPSSONOS_FNC_VOLUME, null);
+	}
 
 	/**
 	 *  @brief Set status of the mute function
@@ -274,10 +274,10 @@
 	 *  @param [in] $roomName Name of room as character
 	 *  @return Result as boolean
 	 */
-//	function IPSSonos_GetMute($roomName) {
-//		$server = IPSSonos_GetServer($instanceId);
-//		return $server->GetData(IPSSONOS_CMD_AUDIO, $roomId, IPSSONOS_FNC_MUTE, null);
-//	}
+	function IPSSonos_GetMute($roomName) {
+		$server = IPSSonos_GetServer();
+		return $server->GetData(IPSSONOS_CMD_AUDIO, $roomName, IPSSONOS_FNC_MUTE, null);
+	}
 	
 	/**
 	 *  @brief Seek
@@ -337,7 +337,46 @@
 		$server = IPSSonos_GetServer();
 		return $server->SendData(IPSSONOS_CMD_AUDIO, $roomName, IPSSONOS_FNC_PLAYRDNAME, $value);
 	}		
+
+/*********************************************************************************************
+ *  
+ *  Messaging Functions
+ *  
+ **********************************************************************************************/	
 	
+	/**
+	 *  @brief Pause current song and output (speech) message to single room
+	 *  
+	 *  @param [in] $roomName Name of room as character
+	 *  @param [in] $value text for output which will be converted to speech as string
+	 *  @return Result as boolean
+	 */
+	function IPSSonos_PlayTTSByRoomSimple($roomName, $value) {
+		$server = IPSSonos_GetServer();
+		return $server->SendData(IPSSONOS_CMD_SERVER, $roomName, IPSSONOS_FNC_MSGTTSRS, $value);
+	}	
+
+	/**
+	 *  @brief Pause current song and output (speech) message to all active rooms
+	 *  
+	 *  @param [in] $value text for output which will be converted to speech as string
+	 *  @return Result as boolean
+	 */
+	function IPSSonos_PlayTTSAllRoomsSimple($value) {
+		$server = IPSSonos_GetServer();
+		return $server->SendData(IPSSONOS_CMD_SERVER, null, IPSSONOS_FNC_MSGTTSAS, $value);
+	}	
+
+	/**
+	 *  @brief Generic function to pause current song play a message (speech and/or sound)
+	 *  
+	 *  @param [in] $value arry of parameters for message output. see ips-wiki for details
+	 *  @return Result as boolean
+	 */
+	function IPSSonos_PlayMessage($value) {
+		$server = IPSSonos_GetServer();
+		return $server->SendData(IPSSONOS_CMD_SERVER, null, IPSSONOS_FNC_MSGGEN, $value);
+	}		
 /*********************************************************************************************
  *  
  *  Server Functions
