@@ -42,7 +42,7 @@
     *
 	* @author        joki
 	* @version
-	* Version 1.1.0, 12.10.2014<br/>
+	* Version 1.1.1, 25.10.2014<br/>
     */
 	class IPSSonos_Server {
 
@@ -790,7 +790,7 @@
 			
 			// Initialize ---------------------------------------------------------------
 //			set_time_limit(100);
-			
+//IPSLogger_Inf("IPSSonos", "Start");			
 			$MessageConfig = IPSSonos_GetMessageConfiguration();
 			$l_volume_ramp	= @$params["Volume_Ramp"]; 	if ($l_volume_ramp!='fast') $l_volume_ramp='slow';
 			$l_sound_repeat = @$params["Sound_Repeat"];	if ($l_sound_repeat=='') $l_sound_repeat = 1;
@@ -825,18 +825,20 @@
 				   IPS_Sleep(75);
 				}
 			} else {
-			   $ramp_type = "AUTOPLAY_RAMP_TYPE";
-				for ($i = 0; $i < $count_rooms; $i++) {
-					$sonos[$i]->RampToVolume($ramp_type, 0);
-				}
+//			   $ramp_type = "AUTOPLAY_RAMP_TYPE";
+//				for ($i = 0; $i < $count_rooms; $i++) {
+//					$sonos[$i]->RampToVolume($ramp_type, 0);
+//					$sonos[$i]->SetVolume($volume_start[$i]);
+//				}
 			}
-			
+//IPSLogger_Inf("IPSSonos", "Ramp-Down fertig");				
 		   // Save status of players ---------------------------------------------------
 			for ($i = 0; $i < $count_rooms; $i++) {
 				$oldpi[$i] = $sonos[$i]->GetPositionInfo();
 				$oldmi[$i] = $sonos[$i]->GetMediaInfo();
 				$radio[$i] = (strpos($oldmi[$i]['CurrentURI'],"x-sonosapi-stream:")>0)===false;
 				$oldti[$i] = $sonos[$i]->GetTransportInfo();
+				$sonos[$i]->stop();
 			}
 
 			// Play Sound ---------------------------------------------------------------
@@ -858,13 +860,13 @@
 					//Wait till first player ended with playing text
 					while ($sonos[0]->GetTransportInfo()==1)
 					{
-					   IPS_Sleep(100);
+					   IPS_Sleep(200);
 					}
 					// Wait specified time, but not in the last loop.
 					if ($h < ($l_sound_repeat - 1)) IPS_Sleep((int) $l_sound_delay);
 			  }
 			}
-
+//IPSLogger_Inf("IPSSonos", "Play Sound fertig");	
 		   // Play Text ----------------------------------------------------------------
 		   if (@$params["Text"]!='') {
 				switch ($params["Type"]) {
@@ -900,7 +902,7 @@
 					IPS_Sleep(200); 
 				}
 			}
-			
+//IPSLogger_Inf("IPSSonos", "Play Text fertig");		
 			//Reset players to initial state and start playing with volume 0
 			for ($i = 0; $i < $count_rooms; $i++) {
 				if ($radio[$i])
@@ -926,7 +928,7 @@
 				$sonos[$i]->SetVolume(0);
 				if ($oldti[$i]==1) $sonos[$i]->Play();
 			}
-
+//IPSLogger_Inf("IPSSonos", "Alter Zustand herstellen fertig");
 			//Ramp-Up volume to initial level -------------------------------------------
 		   if ($l_volume_ramp!='fast') {
 				$volume = 0;
@@ -944,9 +946,11 @@
 			} else {
 			   $ramp_type = "AUTOPLAY_RAMP_TYPE";
 				for ($i = 0; $i < $count_rooms; $i++) {
-					$sonos[$i]->RampToVolume($ramp_type, $volume_start[$i]);
+				//	$sonos[$i]->RampToVolume($ramp_type, $volume_start[$i]);
+					$sonos[$i]->SetVolume($volume_start[$i]);
 				}
 			}
+//IPSLogger_Inf("IPSSonos", "Ramp Up fertig");			
 		}		
 	}
 	
