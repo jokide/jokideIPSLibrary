@@ -42,7 +42,7 @@
     *
 	* @author        joki
 	* @version
-	* Version 1.1.1, 25.10.2014<br/>
+	* Version 1.1.2, 29.10.2014<br/>
     */
 	class IPSSonos_Server {
 
@@ -788,9 +788,7 @@
 		
 		private function PlayMessage($params) {
 			
-			// Initialize ---------------------------------------------------------------
-//			set_time_limit(100);
-//IPSLogger_Inf("IPSSonos", "Start");			
+			// Initialize ---------------------------------------------------------------		
 			$MessageConfig = IPSSonos_GetMessageConfiguration();
 			$l_volume_ramp	= @$params["Volume_Ramp"]; 	if ($l_volume_ramp!='fast') $l_volume_ramp='slow';
 			$l_sound_repeat = @$params["Sound_Repeat"];	if ($l_sound_repeat=='') $l_sound_repeat = 1;
@@ -824,14 +822,8 @@
 				   $volume = $volume - 1;
 				   IPS_Sleep(75);
 				}
-			} else {
-//			   $ramp_type = "AUTOPLAY_RAMP_TYPE";
-//				for ($i = 0; $i < $count_rooms; $i++) {
-//					$sonos[$i]->RampToVolume($ramp_type, 0);
-//					$sonos[$i]->SetVolume($volume_start[$i]);
-//				}
 			}
-//IPSLogger_Inf("IPSSonos", "Ramp-Down fertig");				
+		
 		   // Save status of players ---------------------------------------------------
 			for ($i = 0; $i < $count_rooms; $i++) {
 				$oldpi[$i] = $sonos[$i]->GetPositionInfo();
@@ -852,7 +844,7 @@
 					$sonos[$i]->SetAVTransportURI($l_song);
 				}
 				
-				// Start loop
+				// Loop to play sound several times
 				for ($h = 0; $h < $l_sound_repeat; $h++) {
 					for ($i = 0; $i < $count_rooms; $i++) {
 						$sonos[$i]->Play();
@@ -863,10 +855,13 @@
 					   IPS_Sleep(200);
 					}
 					// Wait specified time, but not in the last loop.
-					if ($h < ($l_sound_repeat - 1)) IPS_Sleep((int) $l_sound_delay);
+					if ($h < ($l_sound_repeat - 1)) {
+					IPS_Sleep((int) $l_sound_delay);
+					}
+					else IPS_Sleep(200);
 			  }
 			}
-//IPSLogger_Inf("IPSSonos", "Play Sound fertig");	
+			
 		   // Play Text ----------------------------------------------------------------
 		   if (@$params["Text"]!='') {
 				switch ($params["Type"]) {
@@ -890,7 +885,8 @@
 				}
 				
 				for ($i = 0; $i < $count_rooms; $i++) {
-					$sonos[$i]->SetVolume($volume_start[$i]);
+					$l_volume = $volume_start[$i] + @$params["Text_Volume_Offset"];
+					$sonos[$i]->SetVolume($l_volume);
 					$sonos[$i]->SetAVTransportURI("x-file-cifs:".$MessageConfig[IPSSONOS_VAR_SMBPATH].$filename);
 					$sonos[$i]->Play();
 				}
@@ -901,8 +897,7 @@
 				{
 					IPS_Sleep(200); 
 				}
-			}
-//IPSLogger_Inf("IPSSonos", "Play Text fertig");		
+			}	
 			//Reset players to initial state and start playing with volume 0
 			for ($i = 0; $i < $count_rooms; $i++) {
 				if ($radio[$i])
@@ -928,7 +923,6 @@
 				$sonos[$i]->SetVolume(0);
 				if ($oldti[$i]==1) $sonos[$i]->Play();
 			}
-//IPSLogger_Inf("IPSSonos", "Alter Zustand herstellen fertig");
 			//Ramp-Up volume to initial level -------------------------------------------
 		   if ($l_volume_ramp!='fast') {
 				$volume = 0;
@@ -944,13 +938,10 @@
 				   IPS_Sleep(50);
 				}
 			} else {
-			   $ramp_type = "AUTOPLAY_RAMP_TYPE";
 				for ($i = 0; $i < $count_rooms; $i++) {
-				//	$sonos[$i]->RampToVolume($ramp_type, $volume_start[$i]);
 					$sonos[$i]->SetVolume($volume_start[$i]);
 				}
-			}
-//IPSLogger_Inf("IPSSonos", "Ramp Up fertig");			
+			}			
 		}		
 	}
 	
