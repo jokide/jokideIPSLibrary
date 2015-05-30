@@ -100,7 +100,7 @@
 				}				
 				// Check that Sonos device is reachable					
 				if( Sys_Ping( $room->IPAddr, 200 ) == false) {
-//					IPSLogger_Wrn(__file__, 'Raum '.$room->roomName.' konnte nicht abgefragt werden, da Sonos-Gerät nicht erreichbar!');
+//					IPSLogger_Wrn(__file__, 'Raum '.$room->roomName.' konnte nicht abgefragt werden, da Sonos-GerÃ¤t nicht erreichbar!');
 					continue; // Next foreach - loop
 				}
 				
@@ -121,11 +121,11 @@
 				// Get Sonos information
 //				$ZoneAttributes 		= $sonos->GetZoneAttributes();
 				$PosInfo 				= $sonos->GetPositionInfo(); 
-				$Status 				= $sonos->GetTransportInfo();	// gibt den aktuellen Status des Sonos-Players als Integer zurück, 1: PLAYING, 2: PAUSED, 3: STOPPED
-				$MediaInfo 				= $sonos->GetMediaInfo();		// gibt den Namen der Radiostation zurück. Der key ist "title"				
+				$Status 				= $sonos->GetTransportInfo();	// gibt den aktuellen Status des Sonos-Players als Integer zurÃ¼ck, 1: PLAYING, 2: PAUSED, 3: STOPPED
+				$MediaInfo 				= $sonos->GetMediaInfo();		// gibt den Namen der Radiostation zurÃ¼ck. Der key ist "title"				
 				$VolumeInfo 			= $sonos->GetVolume();
 				$MuteInfo 				= $sonos->GetMute();
-//				$TransportSettingsInfo 	= $sonos->GetTransportSettings();	
+				$TransportSettingsInfo 	= $sonos->GetTransportSettings();	
 				
 				// Update status ------------------------------------------------------------------------------------------------------
 				switch ($Status) {
@@ -141,10 +141,12 @@
 						break;					
 				}
 				
-				$room->setvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_FNC_VOLUME, $VolumeInfo); // Update Volume
-				$room->setvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_FNC_MUTE, $MuteInfo);     // Update Mute
+				$room->setvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_FNC_VOLUME, $VolumeInfo); 									// Update Volume
+				$room->setvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_FNC_MUTE, $MuteInfo);     									// Update Mute
+				$room->setvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_FNC_SHUFFLE, $TransportSettingsInfo['shuffle']);   // Update Shuffle
+				$room->setvalue(IPSSONOS_CMD_AUDIO, IPSSONOS_FNC_REPEAT, $TransportSettingsInfo['repeat']);     // Update Repeat
 
-	
+
 				// Identify player type  ------------------------------------------------------------------------------------------------------	
 				// Spotify:			[URI] => x-sonos-spotify
 				// Intunes Radio:	[URI] => x-rincon-mp3radio
